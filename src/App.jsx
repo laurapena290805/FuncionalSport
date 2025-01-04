@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './Home'; // Importa la página principal (Home)
-import AdminPanel from './Admin/AdminPanel'; // Importa la página de administrador (AdminPanel)
+import AdminPanel from './AdminPanel'; // Importa la página de administrador (AdminPanel)
 import Login from './Login';
 import UserPanel from './User/UserPanel';
 import Usuarios from './Usuarios';

@@ -1,17 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './AdminPanel.css';
+import { getPersonas } from "./services/api";
 
 function AdminPanel() {
+  const [personas, setPersonas] = useState([]);
+
+  // Fetch personas data when the component mounts
+  useEffect(() => {
+    fetchPersonas();
+  }, []);
+
+  const fetchPersonas = async () => {
+    const data = await getPersonas();
+    setPersonas(data);
+  };
+
   const clasesDelDia = [
     { hora: '9:00 AM', clase: 'Yoga', alumnos: 12 },
     { hora: '11:00 AM', clase: 'Crossfit', alumnos: 15 },
     { hora: '5:00 PM', clase: 'Funcional', alumnos: 10 },
     { hora: '7:00 PM', clase: 'Zumba', alumnos: 20 },
-  ];
-
-  const mensualidades = [
-    { nombre: 'Juan Pérez', vencimiento: '05/01/2025', telefono: '123-456-7890' },
-    { nombre: 'Ana López', vencimiento: '08/01/2025', telefono: '987-654-3210' },
   ];
 
   return (
@@ -59,24 +67,26 @@ function AdminPanel() {
         {/* Mensualidades a vencer */}
         <section className="section">
           <h2>Mensualidades a vencer</h2>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Fecha de Vencimiento</th>
-                <th>Teléfono</th>
+          <table className="personas-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            {personas.map((persona) => (
+              <tr key={persona.id}>
+                <td>{persona.id}</td>
+                <td>{persona.nombre}</td>
+                <td>{persona.telefono}</td>
+                <td>{persona.fecha}</td>
               </tr>
-            </thead>
-            <tbody>
-              {mensualidades.map((mensualidad, index) => (
-                <tr key={index}>
-                  <td>{mensualidad.nombre}</td>
-                  <td>{mensualidad.vencimiento}</td>
-                  <td>{mensualidad.telefono}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
         </section>
       </main>
     </div>
