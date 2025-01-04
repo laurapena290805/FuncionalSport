@@ -1,0 +1,130 @@
+
+.user-panel-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: 'Helvetica Neue', sans-serif;
+    background-color: #f7f9fc;
+    padding: 20px;
+  }
+  
+  .user-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .user-profile-picture {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #007bff;
+    margin-right: 15px;
+  }
+  
+  .user-profile-info {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .user-profile-icon {
+    font-size: 1.5rem;
+    color: #007bff;
+    cursor: pointer;
+  }
+  
+  .user-main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+  
+  .user-classes-calendar {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-calendar {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .user-calendar th,
+  .user-calendar td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .user-calendar th {
+    background-color: #007bff;
+    color: #ffffff;
+    font-weight: 600;
+  }
+  
+  .user-calendar tr:hover {
+    background-color: #f4f7fc;
+  }
+  
+  .user-button {
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    min-width: 100px;
+  }
+  
+  .user-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .user-section {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .user-progress,
+  .user-membership-status {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
+  }
+  
+  .user-progress-box,
+  .user-membership-box {
+    padding: 15px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    text-align: center;
+    color: #555;
+  }
+  
+  .user-progress-box {
+    height: 150px;
+  }
+  
+  .user-membership-box {
+    height: 100px;
+  }
+  
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+  }

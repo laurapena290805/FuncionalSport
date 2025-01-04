@@ -1,0 +1,93 @@
+/* Contenedor principal */
+.home-container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+  
+  /* Encabezado */
+  .home-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .home-header h1 {
+    font-size: 2.5rem;
+    color: #282c34;
+  }
+  .home-header p {
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  /* Secciones con imágenes y texto */
+  .section-container {
+    margin: 40px 0;
+  }
+  .section-content {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  .section-content.reverse {
+    flex-direction: row-reverse;
+  }
+  .section-image {
+    width: 40%;
+    border-radius: 10px;
+    margin: 0 20px;
+  }
+  .section-text {
+    width: 60%;
+  }
+  .section-text h2 {
+    font-size: 1.8rem;
+    color: #282c34;
+  }
+  .section-text p {
+    font-size: 1rem;
+    color: #777;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-spin infinite 20s linear;
+    }
+  }
+  /* Footer */
+  .home-footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 10px;
+    background-color: #282c34;
+    color: white;
+  }
+  .header {
+    background-color: #282c34;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+  }
+  
+  .header .logo h1 {
+    font-size: 24px;
+    margin: 0;
+  }
+  
+  .header .login-btn {
+    background-color: #61dafb;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .header .login-btn:hover {
+    background-color: #4fa3d1;
+  }
+  
