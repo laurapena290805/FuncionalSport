@@ -71,20 +71,7 @@ const Usuarios = () => {
 
   return (
     <div className="admin-container">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="profile">
-          <div className="profile-picture"></div>
-          <p>Administrador</p>
-        </div>
-        <nav className="menu">
-          <button className="menu-item active">Usuarios</button>
-          <button className="menu-item">Clases</button>
-          <button className="menu-item">Entrenamientos</button>
-          <button className="menu-item">Reportes</button>
-        </nav>
-        <button className="logout">Cerrar Sesión</button>
-      </aside>
+      
 
       {/* Main Content */}
       <main className="main-content">

@@ -37,3 +37,39 @@ export const deletePersona = async (id) => {
 const getArrayFromCollection = (collection) => {
     return collection.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
+
+
+const collectionClasses = "clases";
+
+// Create una clase con ID personalizado
+export const createClase = async (id, obj) => {
+    const docRef = doc(db, collectionClasses, id);
+    await setDoc(docRef, obj);
+}
+
+// Update una clase
+export const updateClase = async (id, obj) => {
+    const docRef = doc(db, collectionClasses, id);
+    await updateDoc(docRef, obj);
+}
+
+// Read todas las clases
+export const getClases = async () => {
+    const colRef = collection(db, collectionClasses);
+    const result = await getDocs(query(colRef));
+    return getArrayFromCollection(result);
+}
+
+// Read clase por ID
+export const getClaseById = async (id) => {
+    const docRef = doc(db, collectionClasses, id);
+    const docSnap = await getDoc(docRef);
+    return docSnap.data();
+}
+
+// Delete una clase
+export const deleteClase = async (id) => {
+    const docRef = doc(db, collectionClasses, id);
+    await deleteDoc(docRef);
+}
+

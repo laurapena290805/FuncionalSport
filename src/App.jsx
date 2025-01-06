@@ -5,6 +5,7 @@ import AdminPanel from './AdminPanel'; // Importa la página de administrador (A
 import Login from './Login';
 import UserPanel from './UserPanel';
 import Usuarios from './Usuarios';
+//import Clases from './Clases';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/login" element={<Login />} /> {/* Página de inicio de sesión} */}
         <Route path="/user/:userId" element={<UserPanel />} /> {/* Página de usuario} */}
         <Route path="/usuarios" element={<Usuarios />} /> {/* Página de usuarios} */}
+     
       </Routes>
     </div>
   );
