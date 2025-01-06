@@ -1,10 +1,20 @@
+/* Configuración general */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f6f8; /* Fondo suave */
+  color: #333; /* Texto oscuro */
+  margin: 0;
+  padding: 0;
+}
+
 /* Contenedor principal */
 .dashboard-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
-  background-color: #f4f7fb;
+  background: #fff; /* Fondo blanco */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
 /* Encabezado */
@@ -12,89 +22,140 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .dashboard-header h1 {
-  font-size: 1.5rem;
-  color: #333;
+  font-size: 24px;
+  color: #555;
 }
 
 .buttons-container {
   display: flex;
-  gap: 20px;
+  gap: 10px;
 }
 
 .primary-button,
 .secondary-button {
-  padding: 10px 20px;
+  padding: 10px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 14px;
 }
 
 .primary-button {
-  background-color: #007bff;
-  color: white;
-}
-
-.secondary-button {
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: #007bff; /* Azul */
+  color: #fff;
+  transition: background 0.3s;
 }
 
 .primary-button:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Azul más oscuro */
+}
+
+.secondary-button {
+  background-color: #6c757d; /* Gris */
+  color: #fff;
+  transition: background 0.3s;
 }
 
 .secondary-button:hover {
-  background-color: #c2c2c2;
+  background-color: #495057; /* Gris más oscuro */
 }
 
-/* Sección de clases */
-.classes-section {
-  margin-top: 20px;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+/* Sección de clases disponibles */
+.classes-section h2 {
+  font-size: 20px;
+  color: #444;
+  margin-bottom: 10px;
 }
 
 .classes-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-.classes-table th,
-.classes-table td {
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #ddd;
+  margin-top: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .classes-table th {
   background-color: #007bff;
   color: white;
+  padding: 12px 8px;
+  text-align: left;
+}
+
+.classes-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.classes-table tr:nth-child(even) {
+  background-color: #f9f9f9; /* Fila alternada */
+}
+
+.classes-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Sección de detalles del usuario */
+.user-details-section {
+  margin-top: 20px;
+}
+
+.columns {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.registered-classes,
+.membership-status {
+  flex: 1; /* Columnas del mismo tamaño */
+}
+
+.registered-classes h2,
+.membership-status h2 {
+  font-size: 18px;
+  color: #444;
+  margin-bottom: 10px;
 }
 
 .membership-status {
-  font-size: 1rem;
-  color: #555;
-  font-weight: 600;
+  padding: 20px;
+  background: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilos del modal */
+/* Botón dentro de la tabla */
+.classes-table button {
+  background-color: #28a745; /* Verde */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.classes-table button:hover {
+  background-color: #218838; /* Verde más oscuro */
+}
+
+/* Modal */
 .modal {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -103,29 +164,36 @@
 }
 
 .modal-content {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 400px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 100%;
 }
 
 .modal-content h2 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+  margin-top: 0;
 }
 
 .close-button {
-  padding: 10px 15px;
+  display: inline-block;
+  background-color: #dc3545; /* Rojo */
+  color: #fff;
   border: none;
-  background-color: #ff4e4e;
-  color: white;
+  padding: 8px 10px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
-  margin-top: 20px;
+  transition: background 0.3s;
 }
 
 .close-button:hover {
-  background-color: #e43f3f;
+  background-color: #c82333; /* Rojo más oscuro */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .columns {
+    flex-direction: column;
+  }
 }
