@@ -1,68 +1,102 @@
-import React from 'react';
-import './UserPanel.css';
+import React, { useState, useEffect } from "react";
+import { getPersonaById } from "./services/api";
+import { useNavigate, useParams } from "react-router-dom";
+import "./UserPanel.css";
 
-function UserPanel() {
-  const classes = [
-    { time: '9:00 AM', name: 'Yoga' },
-    { time: '11:00 AM', name: 'Crossfit' },
-    { time: '5:00 PM', name: 'Funcional' },
-    { time: '7:00 PM', name: 'Zumba' },
-  ];
+const UserPanel = () => {
+  const { userId } = useParams();
+  const [userData, setUserData] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = await getPersonaById(userId);
+        setUserData(data);
+      } catch (error) {
+        console.error("Error al obtener los datos del usuario:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
+
+  const handleLogout = () => {
+    navigate("/login");
+  };
 
   return (
-    <div className="user-panel-container">
-      <header className="user-header">
-        <div className="user-profile-picture"></div>
-        <div className="user-profile-info">Usuario</div>
-        <div className="user-profile-icon">
-          <i className="fas fa-user"></i>
+    <div className="dashboard-container">
+      <header className="dashboard-header">
+        <h1>Bienvenido, {userData ? userData.nombre : "Cargando..."}</h1>
+        <div className="buttons-container">
+          <button className="primary-button" onClick={() => setShowModal(true)}>
+            Ver Datos
+          </button>
+          <button className="secondary-button" onClick={handleLogout}>
+            Cerrar Sesión
+          </button>
         </div>
       </header>
-
-      <main className="user-main-content">
-        <section className="user-classes-calendar">
-          <h2>Clases del Día</h2>
-          <table className="user-calendar">
+      <main className="dashboard-main">
+        <section className="classes-section">
+          <h2>Tus Clases</h2>
+          <table className="classes-table">
             <thead>
               <tr>
-                <th>Hora</th>
                 <th>Clase</th>
-                <th>Acción</th>
+                <th>Días</th>
+                <th>Horario</th>
               </tr>
             </thead>
             <tbody>
-              {classes.map((classItem, index) => (
-                <tr key={index}>
-                  <td>{classItem.time}</td>
-                  <td>{classItem.name}</td>
-                  <td>
-                    <button className="user-button">Agregar</button>
-                  </td>
-                </tr>
-              ))}
+              <tr>
+                <td>Crossfit</td>
+                <td>Lunes y Miércoles</td>
+                <td>6:00 PM</td>
+              </tr>
+              <tr>
+                <td>Yoga</td>
+                <td>Martes y Jueves</td>
+                <td>7:00 AM</td>
+              </tr>
+              <tr>
+                <td>Zumba</td>
+                <td>Viernes</td>
+                <td>8:00 PM</td>
+              </tr>
             </tbody>
           </table>
+          <p className="membership-status">
+            <strong>Membresía:</strong> {userData ? "Activa hasta 31/12/2025" : "Cargando..."}
+          </p>
         </section>
-
-        <div className="user-section">
-          <section className="user-progress">
-            <h2>Progreso</h2>
-            <div className="user-progress-box">
-              <p>Aquí puedes mostrar gráficos o estadísticas del progreso del usuario.</p>
-            </div>
-          </section>
-
-          <section className="user-membership-status">
-            <h2>Estado de la Mensualidad</h2>
-            <div className="user-membership-box">
-              <p>Mensualidad activa hasta: 05/01/2025</p>
-            </div>
-          </section>
-        </div>
       </main>
+
+      {/* Modal con los datos del usuario */}
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Datos del Usuario</h2>
+            {userData ? (
+              <>
+                <p><strong>ID:</strong> {userData.id}</p>
+                <p><strong>Nombre:</strong> {userData.nombre}</p>
+                <p><strong>Teléfono:</strong> {userData.telefono}</p>
+                <p><strong>Fecha:</strong> {userData.fecha}</p>
+              </>
+            ) : (
+              <p>Cargando datos...</p>
+            )}
+            <button className="close-button" onClick={() => setShowModal(false)}>
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
-
+};
 
 export default UserPanel;

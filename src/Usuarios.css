@@ -1,104 +1,93 @@
-.app-layout {
-  display: flex;
-  height: 100vh;
-}
-
-.sidebar {
-  width: 250px;
-  background-color: #2c3e50;
-  color: #ecf0f1;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-}
-
-.profile {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.profile-picture {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background-color: #34495e;
-  margin: 0 auto 10px;
-}
-
-.menu {
-  flex: 1;
-}
-
-.menu-item {
-  background: none;
-  border: none;
-  color: #ecf0f1;
-  padding: 10px;
-  text-align: left;
-  cursor: pointer;
-  width: 100%;
-  font-size: 16px;
-}
-
-.menu-item.active,
-.menu-item:hover {
-  background-color: #34495e;
-}
-
-.logout {
-  background-color: #e74c3c;
-  border: none;
-  color: #fff;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-  font-size: 16px;
-}
-
+/* General container styling */
 .container {
-  flex: 1;
+  max-width: 800px;
+  margin: 0 auto;
   padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.search-bar {
+/* Heading */
+h1 {
+  text-align: center;
+  color: #333;
   margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
 }
 
-.personas-table {
+h2 {
+  margin-top: 20px;
+  color: #555;
+}
+
+/* Search input and buttons */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Table styling */
+.person-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.personas-table th,
-.personas-table td {
-  border: 1px solid #ddd;
+.person-table th,
+.person-table td {
   padding: 10px;
   text-align: left;
+  border: 1px solid #ddd;
 }
 
-.personas-table th {
+.person-table th {
   background-color: #f4f4f4;
 }
 
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.person-table tbody tr:hover {
+  background-color: #f1f1f1;
 }
 
-.modal-content {
-  background: #fff;
+/* Formulario para agregar personas */
+.form-container {
+  margin-top: 20px;
   padding: 20px;
-  border-radius: 5px;
-  width: 400px;
-  max-width: 90%;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.action-button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
 }

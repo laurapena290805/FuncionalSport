@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getPersonas } from "./services/api"; // Asegúrate de tener esta función implementada
-import "./Login.css";
+import "./Login.css"; // Asegúrate de tener el CSS
 
-function Login() {
+const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -19,36 +18,27 @@ function Login() {
     }
 
     // Validación de usuario común
-    try {
-      const personas = await getPersonas();
-      const userExists = personas.some(
-        (persona) => persona.id === username && persona.id === password
-      );
-
-      if (userExists) {
-        console.log("Acceso como usuario");
-        navigate("/user"); // Redirige al panel de usuario
-      } else {
-        alert("Credenciales incorrectas. Verifica tu usuario y contraseña.");
-      }
-    } catch (error) {
-      console.error("Error al validar el usuario:", error);
-      alert("Hubo un problema al autenticar. Inténtalo nuevamente.");
+    if (username && password) {
+      // Aquí podrías validar las credenciales en tu backend si es necesario
+      console.log("Acceso como usuario");
+      navigate(`/user/${username}`); // Navega pasando el ID del usuario como parte de la URL
+    } else {
+      alert("Por favor, ingresa usuario y contraseña válidos.");
     }
   };
 
   return (
     <div className="login-container">
-      <h2>Iniciar Sesión</h2>
       <form onSubmit={handleSubmit} className="login-form">
+        <h2>Iniciar Sesión</h2>
         <div className="input-group">
           <label htmlFor="username">Usuario:</label>
           <input
             type="text"
             id="username"
+            placeholder="Usuario"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
           />
         </div>
         <div className="input-group">
@@ -56,15 +46,15 @@ function Login() {
           <input
             type="password"
             id="password"
+            placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
         </div>
-        <button type="submit" className="login-btn">Iniciar Sesión</button>
+        <button type="submit" className="login-btn">Ingresar</button>
       </form>
     </div>
   );
-}
+};
 
 export default Login;
