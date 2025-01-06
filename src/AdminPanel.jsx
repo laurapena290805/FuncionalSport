@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './AdminPanel.css';
+import { useNavigate } from 'react-router-dom'; // Importa el hook useNavigate
 import { getPersonas } from './services/api';
 import Principal from './Principal';
 import Usuarios from './Usuarios';
 import Clases from './Clases';
 
 function AdminPanel() {
-  const [view, setView] = useState('principal'); // Estado para mostrar la vista inicial 'principal'
+  const [view, setView] = useState('principal');
   const [personas, setPersonas] = useState([]);
   const [personasFiltradas, setPersonasFiltradas] = useState([]);
+  const navigate = useNavigate(); // Inicializa useNavigate para redirección
+
   const clasesDelDia = [
     { hora: '9:00 AM', clase: 'Yoga', alumnos: 12 },
     { hora: '11:00 AM', clase: 'Crossfit', alumnos: 15 },
@@ -40,6 +43,15 @@ function AdminPanel() {
     setPersonasFiltradas(personasConVencimientoProximo);
   };
 
+  const handleLogout = () => {
+    // Elimina cualquier dato de sesión almacenado
+    localStorage.removeItem('authToken'); // Ejemplo: Borra un token almacenado
+    sessionStorage.removeItem('authToken'); // Si usaste sessionStorage
+
+    // Redirige al usuario a la página de inicio de sesión
+    navigate('/login');
+  };
+
   const renderContent = () => {
     switch (view) {
       case 'principal':
@@ -48,10 +60,6 @@ function AdminPanel() {
         return <Usuarios />;
       case 'clases':
         return <Clases />;
-      case 'entrenamientos':
-        return <h2>Entrenamientos</h2>;
-      case 'reportes':
-        return <h2>Reportes</h2>;
       default:
         return <h2>Página no encontrada</h2>;
     }
@@ -75,14 +83,10 @@ function AdminPanel() {
           <button className={`menu-item ${view === 'clases' ? 'active' : ''}`} onClick={() => setView('clases')}>
             Clases
           </button>
-          <button className={`menu-item ${view === 'entrenamientos' ? 'active' : ''}`} onClick={() => setView('entrenamientos')}>
-            Entrenamientos
-          </button>
-          <button className={`menu-item ${view === 'reportes' ? 'active' : ''}`} onClick={() => setView('reportes')}>
-            Reportes
-          </button>
         </nav>
-        <button className="logout">Cerrar Sesión</button>
+        <button className="logout" onClick={handleLogout}>
+          Cerrar Sesión
+        </button>
       </aside>
 
       {/* Main Content */}
