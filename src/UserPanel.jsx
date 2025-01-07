@@ -69,6 +69,26 @@ const UserPanel = () => {
     navigate("/login");
   };
 
+  const getMembershipStatus = () => {
+    if (!userData) return { status: "Cargando...", color: "gray" };
+
+    const today = new Date();
+    const membershipDate = new Date(userData.fecha); // Fecha de vencimiento de la membresía
+
+    // Calcular la diferencia en días entre la fecha de vencimiento y hoy
+    const diffDays = Math.ceil((membershipDate - today) / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return { status: "VENCIDA", color: "red" }; // Fecha ya pasó
+    } else if (diffDays <= 10) {
+      return { status: "PRÓXIMA A VENCER", color: "orange" }; // Faltan 10 días o menos
+    } else {
+      return { status: "AL DÍA", color: "green" }; // Más de 10 días restantes
+    }
+  };
+
+  const membershipStatus = getMembershipStatus();
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -151,11 +171,10 @@ const UserPanel = () => {
               </tbody>
             </table>
           </div>
-          <div className="membership-status">
+          <div className="membership-status" style={{ color: membershipStatus.color }}>
             <h2>Estado de la Membresía</h2>
             <p>
-              <strong>Membresía:</strong>{" "}
-              {userData ? "Activa hasta 31/12/2025" : "Cargando..."}
+              <strong>Membresía:</strong> {membershipStatus.status}
             </p>
           </div>
         </section>

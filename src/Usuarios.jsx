@@ -11,6 +11,10 @@ const Usuarios = () => {
   const [searchId, setSearchId] = useState("");
   const [filteredPersonas, setFilteredPersonas] = useState([]);
 
+  // Para el modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editPersonaId, setEditPersonaId] = useState("");
+
   useEffect(() => {
     showPersonas();
   }, []);
@@ -22,13 +26,29 @@ const Usuarios = () => {
     });
   };
 
+  // Función para agregar 1 mes a la fecha
+  const addMonthToDate = (date) => {
+    const newDate = new Date(date);
+    newDate.setMonth(newDate.getMonth() + 1);
+    return newDate.toISOString().split("T")[0]; // Formato 'YYYY-MM-DD'
+  };
+
   const handleAddPersona = async () => {
     if (!id || !nombre || !telefono || !fecha) {
       alert("Por favor, completa todos los campos.");
       return;
     }
 
-    const personaData = { nombre, telefono, fecha };
+    // Añadir 1 mes a la fecha antes de crear la persona
+    const fechaConMes = addMonthToDate(fecha);
+
+    const personaData = {
+      nombre,
+      telefono,
+      fecha: fechaConMes,
+      mensualidad: false, // Campo por defecto
+    };
+
     await createPersona(id, personaData);
     showPersonas();
     setId("");
@@ -55,6 +75,7 @@ const Usuarios = () => {
     setNombre("");
     setTelefono("");
     setFecha("");
+    setIsModalOpen(false); // Cerrar modal después de editar
   };
 
   const handleSearch = () => {
@@ -69,10 +90,18 @@ const Usuarios = () => {
     setSearchId("");
   };
 
+  // Abre el modal con los datos de la persona seleccionada para editar
+  const openEditModal = (persona) => {
+    setId(persona.id);
+    setNombre(persona.nombre);
+    setTelefono(persona.telefono);
+    setFecha(persona.fecha);
+    setEditPersonaId(persona.id);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="admin-container">
-      
-
       {/* Main Content */}
       <main className="main-content">
         <section className="section">
@@ -99,6 +128,7 @@ const Usuarios = () => {
                 <th>Nombre</th>
                 <th>Teléfono</th>
                 <th>Fecha</th>
+                <th>Mensualidad</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -109,9 +139,17 @@ const Usuarios = () => {
                   <td>{persona.nombre}</td>
                   <td>{persona.telefono}</td>
                   <td>{persona.fecha}</td>
+                  <td>{persona.mensualidad ? "Debe" : "Al día"}</td>
                   <td>
-                    <button onClick={() => handleUpdate(persona.id)} className="action-button">Editar</button>
-                    <button onClick={() => handleDelete(persona.id)} className="action-button">Eliminar</button>
+                    <button
+                      onClick={() => openEditModal(persona)}
+                      className="action-button"
+                    >
+                      Editar
+                    </button>
+                    <button onClick={() => handleDelete(persona.id)} className="action-button">
+                      Eliminar
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -149,9 +187,57 @@ const Usuarios = () => {
             onChange={(e) => setFecha(e.target.value)}
             className="input-field"
           />
-          <button onClick={handleAddPersona} className="action-button">Insertar Persona</button>
+          <button onClick={handleAddPersona} className="action-button">
+            Insertar Persona
+          </button>
         </section>
       </main>
+
+      {/* Modal de edición */}
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Editar Persona</h2>
+            <input
+              type="text"
+              value={id}
+              onChange={(e) => setId(e.target.value)}
+              placeholder="ID"
+              className="input-field"
+              disabled
+            />
+            <input
+              type="text"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              placeholder="Nombre"
+              className="input-field"
+            />
+            <input
+              type="text"
+              value={telefono}
+              onChange={(e) => setTelefono(e.target.value)}
+              placeholder="Teléfono"
+              className="input-field"
+            />
+            <input
+              type="date"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              className="input-field"
+            />
+            <button
+              onClick={() => handleUpdate(editPersonaId)}
+              className="action-button"
+            >
+              Guardar Cambios
+            </button>
+            <button onClick={() => setIsModalOpen(false)} className="action-button">
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
