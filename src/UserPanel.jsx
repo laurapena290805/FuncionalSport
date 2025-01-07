@@ -14,26 +14,33 @@ const UserPanel = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUserDataAndClasses = async () => {
       try {
-        const data = await getPersonaById(userId);
-        setUserData(data);
+        const user = await getPersonaById(userId); // Obtiene datos del usuario
+        setUserData(user);
+
+        const classes = await getClases(); // Obtiene todas las clases
+
+        // Separar clases registradas y disponibles
+        const registered = [];
+        const available = [];
+
+        classes.forEach((clase) => {
+          if (clase.inscritos.includes(user.nombre)) {
+            registered.push(clase);
+          } else {
+            available.push(clase);
+          }
+        });
+
+        setRegisteredClasses(registered);
+        setAvailableClasses(available);
       } catch (error) {
-        console.error("Error al obtener los datos del usuario:", error);
+        console.error("Error al cargar datos:", error);
       }
     };
 
-    const fetchAvailableClasses = async () => {
-      try {
-        const classes = await getClases();
-        setAvailableClasses(classes);
-      } catch (error) {
-        console.error("Error al obtener las clases disponibles:", error);
-      }
-    };
-
-    fetchUserData();
-    fetchAvailableClasses();
+    fetchUserDataAndClasses();
   }, [userId]);
 
   const handleAddClass = async (classId) => {
@@ -41,15 +48,13 @@ const UserPanel = () => {
 
     if (selectedClass && userData) {
       try {
-        // Referencia al documento de la clase en Firestore
         const classRef = doc(db, "clases", classId);
 
-        // Actualizar el campo "inscritos" agregando el nombre del usuario al array
         await updateDoc(classRef, {
           inscritos: arrayUnion(userData.nombre),
         });
 
-        // Actualizar el estado local para reflejar los cambios
+        // Actualizar estado local
         setRegisteredClasses([...registeredClasses, selectedClass]);
         setAvailableClasses(availableClasses.filter((clase) => clase.id !== classId));
 
