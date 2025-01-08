@@ -30,7 +30,8 @@ body {
   margin: 20px 0;
 }
 
-.table th, .table td {
+.table th,
+.table td {
   text-align: left;
   padding: 12px 15px;
   border-bottom: 1px solid #ddd;
@@ -70,25 +71,33 @@ body {
   background-color: #45a049;
 }
 
-/* No data row */
-.table tbody tr td[colspan="4"] {
-  text-align: center;
-  font-style: italic;
-  color: #999;
-}
-
-/* Responsive design */
+/* Responsive Design: Only for mobile screens */
 @media (max-width: 768px) {
-  .table th, .table td {
-    font-size: 14px;
-    padding: 10px;
-  }
-
   .section {
+    margin: 10px auto;
     padding: 15px;
   }
 
   .section h2 {
     font-size: 20px;
+  }
+
+  /* Table becomes scrollable */
+  .table {
+    display: block;
+    overflow-x: auto;
+    border: 1px solid #ddd;
+  }
+
+  .table th,
+  .table td {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  /* Compact buttons */
+  .btn {
+    font-size: 12px;
+    padding: 6px 12px;
   }
 }

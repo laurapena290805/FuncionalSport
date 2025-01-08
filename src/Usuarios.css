@@ -91,3 +91,52 @@ h2 {
 .action-button:hover {
   background-color: #0056b3;
 }
+
+/* Responsive Design: Only for mobile screens */
+@media (max-width: 768px) {
+  /* Reduce padding and margins for mobile */
+  .container {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  /* Adjust search input and buttons to stack */
+  .search-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  /* Make table scrollable */
+  .person-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .person-table th,
+  .person-table td {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  /* Adjust form input fields and buttons */
+  .input-field {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .action-button {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}
