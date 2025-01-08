@@ -95,7 +95,7 @@ function Home() {
         <section className="new-feature-section">
           <div className="new-feature">
             <div className="feature-text">
-              <h3>Sauna</h3>
+              <h3>Trampolin</h3>
               <p>
                 El sauna es ideal para la recuperación muscular y la relajación. Ayuda a reducir el estrés, mejorar la circulación y aliviar dolores musculares. ¡La opción perfecta después de un entrenamiento intenso!
               </p>

@@ -8,6 +8,7 @@ html, body {
   background-color: #f9f9f9;
 }
 
+/* Home Container */
 .home-container {
   width: 100%;
   min-height: 98vh;
@@ -17,13 +18,13 @@ html, body {
 }
 
 /* Header */
-.header {
+.home-container .header {
   background-color: #28a745;
   color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem; /* Reducido el padding */
+  padding: 1rem 2rem;
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
   height: 80px;
   width: 100%;
@@ -31,11 +32,11 @@ html, body {
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.header:hover {
+.home-container .header:hover {
   transform: translateY(-5px);
 }
 
-.header-title {
+.home-container .header-title {
   font-family: 'Poppins', sans-serif;
   font-size: 2.5rem;
   font-weight: 600;
@@ -44,66 +45,51 @@ html, body {
   text-transform: uppercase;
 }
 
-.login-button {
+.home-container .login-button {
   background-color: white;
   color: #28a745;
   border: none;
-  padding: 0.8rem 1.8rem; /* Reducido el padding */
+  padding: 0.8rem 1.8rem;
   border-radius: 50px;
   cursor: pointer;
   font-size: 1rem;
-  font-family: 'Montserrat', sans-serif; /* Cambié la fuente */
+  font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   transition: background-color 0.3s ease, transform 0.2s ease;
   margin-right: 5rem;
 }
 
-.login-button:hover {
+.home-container .login-button:hover {
   background-color: #f0f0f0;
   transform: translateY(-3px);
 }
 
 /* Main content */
-.main-content {
+.home-container .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem 2rem; /* Ajustado para reducir más el padding */
+  padding: 2rem 2rem;
   width: 100%;
   background-color: #fff;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  margin-top: 1rem; /* Ajustado el margen superior */
-  box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
-  overflow-x: hidden; /* Desactiva el desbordamiento horizontal */
-  overflow-y: hidden; /* Desactiva el desbordamiento vertical */
-}
-
-/* Ajustes en las secciones que están dentro de main-content */
-.feature-section,
-.new-feature-section {
-  width: 100%;
-  max-width: 100%; /* Evita que los elementos se desborden */
+  margin-top: 1rem;
   box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
-/* Para las imágenes de las features */
-.feature-image,
-.new-feature img {
-  max-width: 100%; /* Asegura que las imágenes no desborden */
-  height: auto;
-}
-
-.intro-section {
-  margin-bottom: 1.5rem; /* Reducido aún más el margen */
+.home-container .intro-section {
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 
-.intro-title {
+.home-container .intro-title {
   font-family: 'Poppins', sans-serif;
-  font-size: 2.8rem; /* Ajustado el tamaño */
+  font-size: 2.8rem;
   color: #333;
   margin-bottom: 1rem;
   font-weight: 600;
@@ -112,27 +98,27 @@ html, body {
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.intro-text {
-  font-size: 1.3rem; /* Ajustado el tamaño */
+.home-container .intro-text {
+  font-size: 1.3rem;
   color: #666;
-  margin-bottom: 1rem; /* Reducido el margen inferior */
+  margin-bottom: 1rem;
   line-height: 1.6;
 }
 
 /* Feature section */
-.feature-section {
+.home-container .feature-section {
   display: flex;
   justify-content: space-between;
-  gap: 1.2rem; /* Reducido aún más el espacio entre bloques */
-  margin-top: 1.5rem; /* Reducido el margen superior */
+  gap: 1.2rem;
+  margin-top: 1.5rem;
   flex-wrap: wrap;
   width: 100%;
 }
 
-.feature {
+.home-container .feature {
   background-color: rgba(51, 49, 49, 0.311);
   border-radius: 12px;
-  padding: 1.2rem; /* Reducido el padding */
+  padding: 1.2rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -140,51 +126,51 @@ html, body {
   width: 30%;
   max-width: 380px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  margin-bottom: 1.2rem; /* Reducido el margen inferior */
+  margin-bottom: 1.2rem;
 }
 
-.feature:hover {
+.home-container .feature:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
-.feature-image {
+.home-container .feature-image {
   width: 100%;
-  max-width: 280px; /* Ajustado el tamaño */
+  max-width: 280px;
   height: auto;
   border-radius: 10px;
   object-fit: cover;
   margin-bottom: 1rem;
 }
 
-.feature-text h3 {
+.home-container .feature-text h3 {
   font-family: 'Poppins', sans-serif;
-  font-size: 1.6rem; /* Reducido el tamaño */
+  font-size: 1.6rem;
   color: #28a745;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.feature-text p {
+.home-container .feature-text p {
   color: #555;
-  font-size: 1rem; /* Reducido el tamaño */
+  font-size: 1rem;
   line-height: 1.5;
 }
 
 /* Nuevas secciones: Zona de Pesas, Zona Cardio, Sauna */
-.new-feature-section {
-  margin-top: 1.5rem; /* Reducido el margen superior */
+.home-container .new-feature-section {
+  margin-top: 1.5rem;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem; /* Reducido el espacio entre bloques */
+  gap: 1.2rem;
 }
 
-.new-feature {
+.home-container .new-feature {
   background-color: white;
   border-radius: 12px;
-  padding: 1.5rem; /* Reducido el padding */
+  padding: 1.5rem;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: row;
@@ -197,70 +183,70 @@ html, body {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.new-feature:hover {
+.home-container .new-feature:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
-.new-feature img {
+.home-container .new-feature img {
   width: 100%;
   max-width: 320px;
   height: auto;
   border-radius: 12px;
-  object-fit: cover;
 }
 
-.new-feature .feature-text {
+.home-container .new-feature .feature-text {
   width: calc(100% - 350px);
 }
 
-.new-feature-text h3 {
+.home-container .new-feature-text h3 {
   font-family: 'Poppins', sans-serif;
-  font-size: 1.6rem; /* Reducido el tamaño */
+  font-size: 1.6rem;
   color: #28a745;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.new-feature-text p {
+.home-container .new-feature-text p {
   color: #555;
-  font-size: 1rem; /* Reducido el tamaño */
+  font-size: 1rem;
   line-height: 1.5;
+  white-space: pre-line; /* Permite saltos de línea según el contenido */
+  font-weight: normal;
 }
 
 /* Footer */
-.footer {
+.home-container .footer {
   text-align: center;
   background-color: #333;
   color: white;
-  padding: 1.5rem; /* Reducido el padding */
-  margin-top: 2.5rem; /* Ajustado el margen superior */
+  padding: 1.5rem;
+  margin-top: 2.5rem;
   border-radius: 10px;
   width: 100%;
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.footer a {
+.home-container .footer a {
   color: #28a745;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s ease;
 }
 
-.footer a:hover {
+.home-container .footer a:hover {
   color: #1c7a3e;
 }
 
 /* Sección de Entrenadores */
-/* Sección de Entrenadores */
-.trainers-section {
-  margin-top: 3rem; /* Separación de la sección */
+.home-container .trainers-section {
+  margin-top: 3rem;
   padding: 2rem;
   text-align: center;
 }
 
-.trainers-title {
+.home-container .trainers-title {
   font-size: 2rem;
   font-weight: 600;
   color: #28a745;
@@ -268,7 +254,7 @@ html, body {
   text-transform: uppercase;
 }
 
-.trainers-container {
+.home-container .trainers-container {
   display: flex;
   justify-content: center;
   gap: 8rem;
@@ -276,14 +262,14 @@ html, body {
   margin-top: 2rem;
 }
 
-.trainer-card {
+.home-container .trainer-card {
   position: relative;
   width: 250px;
   height: 350px;
   perspective: 1000px;
 }
 
-.trainer-card-inner {
+.home-container .trainer-card-inner {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -292,12 +278,12 @@ html, body {
   cursor: pointer;
 }
 
-.trainer-card:hover .trainer-card-inner {
+.home-container .trainer-card:hover .trainer-card-inner {
   transform: rotateY(180deg);
 }
 
-.trainer-card-front,
-.trainer-card-back {
+.home-container .trainer-card-front,
+.home-container .trainer-card-back {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -305,21 +291,21 @@ html, body {
   border-radius: 12px;
 }
 
-.trainer-card-front {
+.home-container .trainer-card-front {
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
 
-.trainer-card-front img {
+.home-container .trainer-card-front img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 12px;
 }
 
-.trainer-card-back {
+.home-container .trainer-card-back {
   background-color: #28a745;
   color: white;
   transform: rotateY(180deg);
@@ -328,15 +314,50 @@ html, body {
   justify-content: center;
   padding: 1rem;
   text-align: center;
+  border-radius: 12px;
 }
 
-.trainer-card-back h3 {
-  font-size: 1.5rem;
+.home-container .trainer-card-back h3 {
+  font-size: 1.4rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
 }
 
-.trainer-card-back p {
-  font-size: 1rem;
-  line-height: 1.5;
+.home-container .trainer-card-back p {
+  font-size: 1.1rem;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .home-container .feature-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .home-container .feature {
+    width: 80%;
+    max-width: 300px;
+    margin-bottom: 1rem;
+  }
+
+  .home-container .new-feature {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .home-container .new-feature-text p {
+    font-size: 1.1rem; /* Ajustar tamaño del texto */
+    white-space: pre-line; /* Saltos de línea según contenido */
+    text-align: center;
+  }
+
+  .home-container .new-feature img {
+    width: 80%;
+    max-width: 240px;
+    height: auto;
+  }
+
+  .home-container .new-feature .feature-text {
+    width: 100%;
+    text-align: center;
+  }
 }
