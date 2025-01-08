@@ -3,17 +3,17 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+  background-color: #f9f9f9;
 }
 
 .home-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  box-sizing: border-box;
-  min-height: 100vh;
+  width: 100%;
+  min-height: 98vh;
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease-in-out;
 }
 
 /* Header */
@@ -23,139 +23,210 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem 2rem; /* Reducido el padding */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
   height: 80px;
+  width: 100%;
+  border-bottom: 3px solid #228636;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.header:hover {
+  transform: translateY(-5px);
 }
 
 .header-title {
+  font-family: 'Poppins', sans-serif;
   font-size: 2.5rem;
-  font-weight: bold;
+  font-weight: 600;
   letter-spacing: 1px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
 }
 
 .login-button {
   background-color: white;
   color: #28a745;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 5px;
+  padding: 0.8rem 1.8rem; /* Reducido el padding */
+  border-radius: 50px;
   cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif; /* Cambié la fuente */
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-right: 5rem;
 }
 
 .login-button:hover {
   background-color: #f0f0f0;
+  transform: translateY(-3px);
 }
 
 /* Main content */
 .main-content {
-  text-align: center;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 2rem; /* Ajustado para reducir más el padding */
+  width: 100%;
+  background-color: #fff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-top: 1rem; /* Ajustado el margen superior */
+  box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+  overflow-x: hidden; /* Desactiva el desbordamiento horizontal */
+  overflow-y: hidden; /* Desactiva el desbordamiento vertical */
+}
+
+/* Ajustes en las secciones que están dentro de main-content */
+.feature-section,
+.new-feature-section {
+  width: 100%;
+  max-width: 100%; /* Evita que los elementos se desborden */
+  box-sizing: border-box;
+}
+
+/* Para las imágenes de las features */
+.feature-image,
+.new-feature img {
+  max-width: 100%; /* Asegura que las imágenes no desborden */
+  height: auto;
 }
 
 .intro-section {
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem; /* Reducido aún más el margen */
+  text-align: center;
 }
 
 .intro-title {
-  font-size: 3rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.8rem; /* Ajustado el tamaño */
   color: #333;
   margin-bottom: 1rem;
-  font-weight: bold;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 2px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .intro-text {
-  font-size: 1.4rem;
+  font-size: 1.3rem; /* Ajustado el tamaño */
   color: #666;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem; /* Reducido el margen inferior */
+  line-height: 1.6;
 }
 
-/* Feature section (para Running, Pérdida de Peso, y Masa Muscular) */
+/* Feature section */
 .feature-section {
   display: flex;
   justify-content: space-between;
-  gap: 2rem;
-  margin-top: 3rem;
+  gap: 1.2rem; /* Reducido aún más el espacio entre bloques */
+  margin-top: 1.5rem; /* Reducido el margen superior */
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .feature {
-  background-color: white;
-  border-radius: 10px;
-  padding: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: rgba(51, 49, 49, 0.311);
+  border-radius: 12px;
+  padding: 1.2rem; /* Reducido el padding */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 30%;
+  max-width: 380px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 1.2rem; /* Reducido el margen inferior */
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
 .feature-image {
   width: 100%;
-  height: 200px;
+  max-width: 280px; /* Ajustado el tamaño */
+  height: auto;
   border-radius: 10px;
   object-fit: cover;
   margin-bottom: 1rem;
 }
 
 .feature-text h3 {
-  font-size: 1.8rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.6rem; /* Reducido el tamaño */
   color: #28a745;
-  font-weight: bold;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .feature-text p {
   color: #555;
-  font-size: 1.1rem;
+  font-size: 1rem; /* Reducido el tamaño */
+  line-height: 1.5;
 }
 
 /* Nuevas secciones: Zona de Pesas, Zona Cardio, Sauna */
 .new-feature-section {
-  margin-top: 3rem;
+  margin-top: 1.5rem; /* Reducido el margen superior */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem; /* Reducido el espacio entre bloques */
 }
 
 .new-feature {
   background-color: white;
-  border-radius: 10px;
-  padding: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem; /* Reducido el padding */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-direction: row; /* Establecemos una fila */
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   text-align: left;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.new-feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
 .new-feature img {
   width: 100%;
-  height: 200px;
-  border-radius: 10px;
+  max-width: 320px;
+  height: auto;
+  border-radius: 12px;
   object-fit: cover;
 }
 
 .new-feature .feature-text {
-  width: 60%;
+  width: calc(100% - 350px);
 }
 
 .new-feature-text h3 {
-  font-size: 1.8rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.6rem; /* Reducido el tamaño */
   color: #28a745;
-  font-weight: bold;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .new-feature-text p {
   color: #555;
-  font-size: 1.1rem;
+  font-size: 1rem; /* Reducido el tamaño */
+  line-height: 1.5;
 }
 
 /* Footer */
@@ -163,7 +234,109 @@ html, body {
   text-align: center;
   background-color: #333;
   color: white;
-  padding: 1.5rem;
+  padding: 1.5rem; /* Reducido el padding */
+  margin-top: 2.5rem; /* Ajustado el margen superior */
+  border-radius: 10px;
+  width: 100%;
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.footer a {
+  color: #28a745;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: #1c7a3e;
+}
+
+/* Sección de Entrenadores */
+/* Sección de Entrenadores */
+.trainers-section {
+  margin-top: 3rem; /* Separación de la sección */
+  padding: 2rem;
+  text-align: center;
+}
+
+.trainers-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #28a745;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.trainers-container {
+  display: flex;
+  justify-content: center;
+  gap: 8rem;
+  flex-wrap: wrap;
   margin-top: 2rem;
-  border-radius: 5px;
+}
+
+.trainer-card {
+  position: relative;
+  width: 250px;
+  height: 350px;
+  perspective: 1000px;
+}
+
+.trainer-card-inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.trainer-card:hover .trainer-card-inner {
+  transform: rotateY(180deg);
+}
+
+.trainer-card-front,
+.trainer-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+}
+
+.trainer-card-front {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.trainer-card-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.trainer-card-back {
+  background-color: #28a745;
+  color: white;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+}
+
+.trainer-card-back h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.trainer-card-back p {
+  font-size: 1rem;
+  line-height: 1.5;
 }

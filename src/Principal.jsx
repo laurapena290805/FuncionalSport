@@ -6,6 +6,7 @@ import {
   updateClase,
 } from "./services/api";
 import { createPersona, getPersonas, updatePersona } from "./services/api";
+import "./Principal.css";
 
 const Principal = () => {
   const [clases, setClases] = useState([]);

@@ -47,13 +47,13 @@ body {
 }
 
 .primary-button {
-  background-color: #007bff; /* Azul */
+  background-color: #058438; /* Azul */
   color: #fff;
   transition: background 0.3s;
 }
 
 .primary-button:hover {
-  background-color: #0056b3; /* Azul más oscuro */
+  background-color: #058438; /* Azul más oscuro */
 }
 
 .secondary-button {
@@ -84,7 +84,7 @@ body {
 }
 
 .classes-table th {
-  background-color: #007bff;
+  background-color: #058438;
   color: white;
   padding: 12px 8px;
   text-align: left;

@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import Image1 from './Imagen1.jpg';
 import Image2 from './Image2.jpg';
 import Image3 from './Imagen3.jpg';
+import Entrenador1 from './Imagen1.jpg';
+import Entrenador2 from './Image2.jpg';
+import Entrenador3 from './Imagen3.jpg';
 
 function Home() {
   const navigate = useNavigate();
@@ -67,13 +70,13 @@ function Home() {
         {/* Nuevas secciones: Zona de Pesas, Zona Cardio, Sauna */}
         <section className="new-feature-section">
           <div className="new-feature">
-            <img src={Image1} alt="Zona de Pesas" className="feature-image" />
             <div className="feature-text">
               <h3>Zona de Pesas</h3>
               <p>
                 La zona de pesas está equipada con lo último en maquinaria para fuerza, ideal para aumentar tu masa muscular, mejorar tu fuerza general y tonificar el cuerpo. ¡Aumenta tus marcas con entrenamientos personalizados!
               </p>
             </div>
+            <img src={Image1} alt="Zona de Pesas" className="feature-image" />
           </div>
         </section>
 
@@ -91,12 +94,52 @@ function Home() {
 
         <section className="new-feature-section">
           <div className="new-feature">
-            <img src={Image3} alt="Sauna" className="feature-image" />
             <div className="feature-text">
               <h3>Sauna</h3>
               <p>
                 El sauna es ideal para la recuperación muscular y la relajación. Ayuda a reducir el estrés, mejorar la circulación y aliviar dolores musculares. ¡La opción perfecta después de un entrenamiento intenso!
               </p>
+            </div>
+            <img src={Image3} alt="Sauna" className="feature-image" />
+          </div>
+        </section>
+
+        {/* Nueva sección: Entrenadores */}
+        <section className="trainers-section">
+          <h2 className="trainers-title">Conoce a Nuestros Entrenadores</h2>
+          <div className="trainers-container">
+            <div className="trainer-card">
+              <div className="trainer-card-inner">
+                <div className="trainer-card-front">
+                  <img src={Entrenador1} alt="Entrenador 1" />
+                </div>
+                <div className="trainer-card-back">
+                  <h3>Juan Pérez</h3>
+                  <p>Especialista en entrenamiento funcional y running. Más de 10 años de experiencia.</p>
+                </div>
+              </div>
+            </div>
+            <div className="trainer-card">
+              <div className="trainer-card-inner">
+                <div className="trainer-card-front">
+                  <img src={Entrenador2} alt="Entrenador 2" />
+                </div>
+                <div className="trainer-card-back">
+                  <h3>María Gómez</h3>
+                  <p>Experta en pérdida de peso y entrenamiento de fuerza. Certificación internacional.</p>
+                </div>
+              </div>
+            </div>
+            <div className="trainer-card">
+              <div className="trainer-card-inner">
+                <div className="trainer-card-front">
+                  <img src={Entrenador3} alt="Entrenador 3" />
+                </div>
+                <div className="trainer-card-back">
+                  <h3>Pedro López</h3>
+                  <p>Preparador físico para triatlones y competencias de resistencia. Entrenador de élite.</p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
