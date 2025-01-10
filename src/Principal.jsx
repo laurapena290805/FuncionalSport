@@ -52,7 +52,7 @@ const Principal = () => {
           diferenciaDias >= -10 &&
           diferenciaDias <= 5 &&
           (vencimiento.getMonth() === today.getMonth() ||
-            (vencimiento.getMonth() === today.getMonth() + 1) ||
+            vencimiento.getMonth() === today.getMonth() + 1 ||
             (vencimiento.getMonth() === 0 && today.getMonth() === 11)); // Caso especial para diciembre-enero
 
         if (isCloseToExpiry && !persona.mensualidad) {
@@ -69,7 +69,7 @@ const Principal = () => {
   };
 
   // Manejar el pago de mensualidad y agregar un mes
-  const handlePago = async (personaId) => {
+  const handlePago = async (personaId, metodoPago) => {
     const persona = personas.find((p) => p.id === personaId);
     if (!persona) return;
 
@@ -80,8 +80,13 @@ const Principal = () => {
     // Convertir la fecha a un string en formato YYYY-MM-DD
     const fechaString = nuevaFecha.toISOString().split("T")[0];
 
-    // Actualizar el atributo "mensualidad" a false y cambiar la fecha
-    const updatedPersona = { ...persona, mensualidad: false, fecha: fechaString };
+    // Actualizar el atributo "mensualidad" a false y registrar el método de pago
+    const updatedPersona = {
+      ...persona,
+      mensualidad: false,
+      fecha: fechaString,
+      metodoPago,
+    };
     await updatePersona(personaId, updatedPersona);
 
     // Actualizar la lista de personas después del pago
@@ -142,10 +147,16 @@ const Principal = () => {
                   <td>{persona.fecha}</td>
                   <td>
                     <button
-                      onClick={() => handlePago(persona.id)}
+                      onClick={() => handlePago(persona.id, "Efectivo")}
                       className="btn btn-success"
                     >
-                      Pago
+                      Pago en Efectivo
+                    </button>
+                    <button
+                      onClick={() => handlePago(persona.id, "Transferencia")}
+                      className="btn btn-primary"
+                    >
+                      Pago por Transferencia
                     </button>
                   </td>
                 </tr>
