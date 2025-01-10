@@ -5,6 +5,7 @@ import { getPersonas } from './services/api';
 import Principal from './Principal';
 import Usuarios from './Usuarios';
 import Clases from './Clases';
+import Reportes from './ReportesPago';
 
 function AdminPanel() {
   const [view, setView] = useState('principal');
@@ -60,6 +61,8 @@ function AdminPanel() {
         return <Usuarios />;
       case 'clases':
         return <Clases />;
+      case 'reportes':
+        return <Reportes />;
       default:
         return <h2>Página no encontrada</h2>;
     }
@@ -82,6 +85,9 @@ function AdminPanel() {
           </button>
           <button className={`menu-item ${view === 'clases' ? 'active' : ''}`} onClick={() => setView('clases')}>
             Clases
+          </button>
+          <button className={`menu-item ${view === 'reportes' ? 'active' : ''}`} onClick={() => setView('reportes')}>
+            Reportes
           </button>
         </nav>
         <button className="logout" onClick={handleLogout}>

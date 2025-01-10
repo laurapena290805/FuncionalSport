@@ -73,3 +73,62 @@ export const deleteClase = async (id) => {
     await deleteDoc(docRef);
 }
 
+// Función para obtener los conteos de los usuarios por pago y plan
+const obtenerConteoUsuarios = async () => {
+    try {
+      // Obtener todos los usuarios de la colección personas
+      const personasSnapshot = await getDocs(collection(db, 'personas'));
+      
+      let conteo = {
+        transferencia: 0,
+        efectivo: 0,
+        plan1: 0,
+        plan2: 0
+      };
+  
+      // Iterar sobre cada documento (usuario) en la colección personas
+      personasSnapshot.forEach((doc) => {
+        const usuarioData = doc.data();
+        
+        // Contar por método de pago
+        if (usuarioData.metodoPago === 'Transferencia') {
+          conteo.transferencia += 1;
+        } else if (usuarioData.metodoPago === 'Efectivo') {
+          conteo.efectivo += 1;
+        }
+  
+        // Contar por plan
+        if (usuarioData.plan === 'plan1') {
+          conteo.plan1 += 1;
+        } else if (usuarioData.plan === 'plan2') {
+          conteo.plan2 += 1;
+        }
+      });
+  
+      return conteo;
+    } catch (error) {
+      console.error('Error al obtener los conteos de usuarios:', error);
+      throw error;
+    }
+  };
+  
+  export { obtenerConteoUsuarios };
+
+
+ // Función para registrar el pago en Firebase
+export const registerPago = async (mes, metodoPago, plan) => {
+    try {
+      const pagosRef = db.collection("pagos"); // Asegúrate de tener la colección "pagos" en Firebase
+      const newPago = {
+        mes,
+        metodoPago,
+        plan,
+        fecha: new Date(),
+      };
+      await pagosRef.add(newPago); // Agregar el pago a la colección
+      console.log("Pago registrado exitosamente en Firebase");
+    } catch (error) {
+      console.error("Error al registrar el pago en Firebase:", error);
+      throw error;
+    }
+  };

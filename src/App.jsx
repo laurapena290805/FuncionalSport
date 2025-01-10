@@ -6,6 +6,7 @@ import Login from './Login';
 import UserPanel from './UserPanel';
 import Usuarios from './Usuarios';
 //import Clases from './Clases';
+import ReportesPago from './ReportesPago';
 
 function App() {
   return (
@@ -18,7 +19,8 @@ function App() {
         <Route path="/login" element={<Login />} /> {/* Página de inicio de sesión} */}
         <Route path="/user/:userId" element={<UserPanel />} /> {/* Página de usuario} */}
         <Route path="/usuarios" element={<Usuarios />} /> {/* Página de usuarios} */}
-     
+        {/* <Route path="/clases" element={<Clases />} /> {/* Página de clases} */}
+        <Route path="/reportes" element={<ReportesPago />} /> {/* Página de reportes de pago} */}
       </Routes>
     </div>
   );
