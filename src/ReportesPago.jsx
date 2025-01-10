@@ -1,164 +1,175 @@
-import React, { useState, useEffect } from 'react';
-import { obtenerConteoUsuarios } from './services/api'; // El archivo con la función para obtener los datos 
-import { Bar } from 'react-chartjs-2';  // Importamos Chart.js para gráficos de barras
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import React, { useState, useEffect } from "react";
+import { getPersonas } from "./services/api"; // Asegúrate de que esta función esté importada correctamente
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
-// Registramos los componentes de Chart.js necesarios para gráficos de barras
+// Registrar los componentes de Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const ReportePago = () => {
-  const [conteo, setConteo] = useState({
-    transferencia: 0,
-    efectivo: 0,
-    plan1: 0,
-    plan2: 0,
-    ingresos: 0,
-  });
-
-  const [precioPlan1, setPrecioPlan1] = useState(50); // Precio del Plan 1
-  const [precioPlan2, setPrecioPlan2] = useState(80); // Precio del Plan 2
-  const [editandoPrecios, setEditandoPrecios] = useState(false); // Estado para editar los precios
+const ReportesPago = () => {
+  const [personas, setPersonas] = useState([]);
+  const [mesSeleccionado, setMesSeleccionado] = useState("");
+  const [estadisticas, setEstadisticas] = useState({});
 
   useEffect(() => {
-    const fetchData = async () => {
-      const conteoData = await obtenerConteoUsuarios(); // Cambia esta función por la lógica de tu API
-      setConteo(conteoData);
-    };
-    
-    fetchData();
+    // Obtener las personas al cargar la página
+    getPersonas().then((data) => {
+      setPersonas(data);
+    });
   }, []);
 
-  // Calcular el balance (total de ingresos por planes)
-  const totalIngresosPlan1 = conteo.plan1 * precioPlan1;
-  const totalIngresosPlan2 = conteo.plan2 * precioPlan2;
-  const totalIngresos = totalIngresosPlan1 + totalIngresosPlan2;
-
-  // Datos para los gráficos de barras
-  const dataPago = {
-    labels: ['Transferencia', 'Efectivo'], // Etiquetas para el eje X
-    datasets: [
-      {
-        label: 'Métodos de Pago',
-        data: [conteo.transferencia, conteo.efectivo], // Datos de los métodos de pago
-        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)'],
-        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)'],
-        borderWidth: 1,
-      },
-    ],
+  // Manejar el cambio en la selección del mes
+  const handleMesChange = (event) => {
+    setMesSeleccionado(event.target.value);
+    procesarEstadisticas(event.target.value);
   };
 
+  // Procesar las estadísticas por mes y método de pago
+  const procesarEstadisticas = (mes) => {
+    const stats = {
+      plan1: { Efectivo: 0, Transferencia: 0, ganancia: 0, precio: 100 },
+      plan2: { Efectivo: 0, Transferencia: 0, ganancia: 0, precio: 150 },
+      metodosPago: { Efectivo: 0, Transferencia: 0 },
+    };
+
+    const plan1Precio = 100; // Precio de Plan 1 (ajusta según sea necesario)
+    const plan2Precio = 150; // Precio de Plan 2 (ajusta según sea necesario)
+
+    personas.forEach((persona) => {
+      // Verificar si el mes está presente en los pagos
+      if (persona.pago && persona.pago[mes]) {
+        const metodoPago = persona.pago[mes];
+        const plan = persona.plan; // Asumimos que cada persona tiene un campo "plan" que indica a qué plan pertenece
+
+        if (plan) {
+          // Si la persona pertenece a un plan, incrementar el contador correspondiente
+          if (metodoPago === "Efectivo") {
+            stats[plan].Efectivo += 1;
+            stats.metodosPago.Efectivo += 1;
+          } else if (metodoPago === "Transferencia") {
+            stats[plan].Transferencia += 1;
+            stats.metodosPago.Transferencia += 1;
+          }
+        }
+      }
+    });
+
+    // Calcular las ganancias por plan
+    stats.plan1.ganancia = (stats.plan1.Efectivo + stats.plan1.Transferencia) * plan1Precio;
+    stats.plan2.ganancia = (stats.plan2.Efectivo + stats.plan2.Transferencia) * plan2Precio;
+
+    setEstadisticas(stats); // Actualizar el estado con las estadísticas calculadas
+  };
+
+  // Datos para los gráficos
   const dataPlanes = {
-    labels: ['Plan 1', 'Plan 2'], // Etiquetas para el eje X
+    labels: ["Plan 1", "Plan 2"],
     datasets: [
       {
-        label: 'Planes',
-        data: [conteo.plan1, conteo.plan2], // Datos de los planes
-        backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 159, 64, 0.2)'],
-        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 159, 64, 1)'],
-        borderWidth: 1,
+        label: "Número de Personas",
+        data: [
+          estadisticas.plan1?.Efectivo + estadisticas.plan1?.Transferencia || 0,
+          estadisticas.plan2?.Efectivo + estadisticas.plan2?.Transferencia || 0
+        ],
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
       },
     ],
   };
 
-  // Manejar el cambio de precios cuando el usuario edite
-  const handlePrecioChange = (e, plan) => {
-    const newPrecio = parseFloat(e.target.value);
-    if (plan === 'plan1') {
-      setPrecioPlan1(newPrecio);
-    } else if (plan === 'plan2') {
-      setPrecioPlan2(newPrecio);
-    }
+  const dataMetodosPago = {
+    labels: ["Efectivo", "Transferencia"],
+    datasets: [
+      {
+        label: "Método de Pago",
+        data: [estadisticas.metodosPago?.Efectivo || 0, estadisticas.metodosPago?.Transferencia || 0],
+        backgroundColor: ["rgba(75, 192, 192, 0.6)", "rgba(153, 102, 255, 0.6)"],
+      },
+    ],
   };
 
-  // Función para confirmar los cambios y deshabilitar la edición
-  const handleAceptarCambios = () => {
-    setEditandoPrecios(false);
-    // Aquí podrías agregar un API call o lógica para guardar los cambios en la base de datos si es necesario
-  };
+  // Calcular el total de ganancias
+  const totalGanancias = (estadisticas.plan1?.ganancia || 0) + (estadisticas.plan2?.ganancia || 0);
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h2 style={{ textAlign: 'center' }}>Reporte de Pago y Planes</h2>
+    <div style={{ textAlign: "center" }}>
+      <h2>Estadísticas de Pagos</h2>
 
-      {/* Sección de Planes */}
-      <div style={{ marginBottom: '40px' }}>
-        <h3>Planes</h3>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-          <Bar data={dataPlanes} options={{ responsive: true, plugins: { legend: { position: 'top' } } }} />
-        </div>
-
-        {/* Resumen de los datos de los planes */}
-        <div style={{ marginTop: '10px' }}>
-          <h4>Resumen de Planes</h4>
-          <ul>
-            <li><strong>Plan 1:</strong> {conteo.plan1} usuarios</li>
-            <li><strong>Plan 2:</strong> {conteo.plan2} usuarios</li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Sección de Métodos de Pago */}
-      <div>
-        <h3>Métodos de Pago</h3>
-        <Bar data={dataPago} options={{ responsive: true, plugins: { legend: { position: 'top' } } }} />
-        
-        {/* Resumen de los métodos de pago */}
-        <div style={{ marginTop: '10px' }}>
-          <h4>Resumen de Métodos de Pago</h4>
-          <ul>
-            <li><strong>Transferencia:</strong> {conteo.transferencia} usuarios</li>
-            <li><strong>Efectivo:</strong> {conteo.efectivo} usuarios</li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Sección de Balance */}
-      <div style={{ marginTop: '40px' }}>
-        <h3>Balance</h3>
-        <ul>
-          <li><strong>Ingresos por Plan 1:</strong> ${totalIngresosPlan1}</li>
-          <li><strong>Ingresos por Plan 2:</strong> ${totalIngresosPlan2}</li>
-          <li><strong>Total de Ingresos:</strong> ${totalIngresos}</li>
-        </ul>
-      </div>
-
-      {/* Sección para editar los valores de los planes, ahora debajo del balance */}
-      <div style={{ marginTop: '40px' }}>
-        <h4>Valores de los Planes</h4>
-        {/* Botón para activar/desactivar edición */}
-        <button
-          style={{ padding: '5px 15px', cursor: 'pointer', backgroundColor: '#4CAF50', color: 'white', border: 'none', borderRadius: '5px', marginBottom: '10px' }}
-          onClick={() => setEditandoPrecios(!editandoPrecios)}
+      {/* Selector de mes */}
+      <div style={{ marginBottom: "20px" }}>
+        <label htmlFor="mes">Selecciona un mes:</label>
+        <select
+          id="mes"
+          value={mesSeleccionado}
+          onChange={handleMesChange}
+          style={{ padding: "5px 10px", fontSize: "16px" }}
         >
-          {editandoPrecios ? 'Cancelar Edición' : 'Editar Precios'}
-        </button>
+          <option value="">-- Elige un mes --</option>
+          <option value="enero">Enero</option>
+          <option value="febrero">Febrero</option>
+          <option value="marzo">Marzo</option>
+          <option value="abril">Abril</option>
+          {/* Agrega más opciones para los demás meses */}
+        </select>
+      </div>
 
-        {/* Input de precio solo visible si está en modo de edición */}
-        {editandoPrecios ? (
+      {/* Mostrar las estadísticas */}
+      <div>
+        {mesSeleccionado && (
           <>
-            <input
-              type="number"
-              value={precioPlan1}
-              onChange={(e) => handlePrecioChange(e, 'plan1')}
-              style={{ margin: '5px 0', padding: '5px', borderRadius: '5px' }}
-            />
-            <input
-              type="number"
-              value={precioPlan2}
-              onChange={(e) => handlePrecioChange(e, 'plan2')}
-              style={{ margin: '5px 0', padding: '5px', borderRadius: '5px' }}
-            />
-            <button
-              style={{ padding: '5px 15px', cursor: 'pointer', backgroundColor: '#FF6347', color: 'white', border: 'none', borderRadius: '5px', marginTop: '10px' }}
-              onClick={handleAceptarCambios}
-            >
-              Aceptar Cambios
-            </button>
-          </>
-        ) : (
-          <>
-            <p><strong>Plan 1:</strong> ${precioPlan1}</p>
-            <p><strong>Plan 2:</strong> ${precioPlan2}</p>
+            <table className="table" style={{ width: "80%", margin: "0 auto", textAlign: "center" }}>
+              <thead>
+                <tr>
+                  <th style={{ width: "20%" }}>Plan</th>
+                  <th style={{ width: "15%" }}>Precio</th>
+                  <th style={{ width: "15%" }}>Efectivo</th>
+                  <th style={{ width: "15%" }}>Transferencia</th>
+                  <th style={{ width: "15%" }}>Ganancia Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Plan 1</td>
+                  <td>{estadisticas.plan1?.precio || 0}</td>
+                  <td>{estadisticas.plan1?.Efectivo || 0}</td>
+                  <td>{estadisticas.plan1?.Transferencia || 0}</td>
+                  <td>{estadisticas.plan1?.ganancia || 0}</td>
+                </tr>
+                <tr>
+                  <td>Plan 2</td>
+                  <td>{estadisticas.plan2?.precio || 0}</td>
+                  <td>{estadisticas.plan2?.Efectivo || 0}</td>
+                  <td>{estadisticas.plan2?.Transferencia || 0}</td>
+                  <td>{estadisticas.plan2?.ganancia || 0}</td>
+                </tr>
+                {/* Fila con el total */}
+                <tr>
+                  <td colSpan="4" style={{ textAlign: "center" }}>Total</td>
+                  <td>{totalGanancias || 0}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            {/* Sección del gráfico de planes */}
+            <div style={{ display: "block", width: "60%", margin: "20px auto" }}>
+              <h3 style={{ marginBottom: "10px" }}>Distribución de Personas por Plan</h3>
+              <Bar 
+                data={dataPlanes} 
+                options={{ responsive: true }} 
+                height={200} 
+                width={300} 
+              />
+            </div>
+
+            {/* Sección del gráfico de métodos de pago */}
+            <div style={{ display: "block", width: "60%", margin: "20px auto" }}>
+              <h3 style={{ marginBottom: "10px" }}>Distribución de Métodos de Pago</h3>
+              <Bar 
+                data={dataMetodosPago} 
+                options={{ responsive: true }} 
+                height={200} 
+                width={300} 
+              />
+            </div>
           </>
         )}
       </div>
@@ -166,4 +177,4 @@ const ReportePago = () => {
   );
 };
 
-export default ReportePago;
+export default ReportesPago;

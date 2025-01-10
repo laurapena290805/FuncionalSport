@@ -68,7 +68,6 @@ const Principal = () => {
     setFilteredPersonas(updatedPersonas.filter((persona) => persona.mensualidad));
   };
 
-  // Manejar el pago de mensualidad y agregar un mes
   const handlePago = async (personaId, metodoPago) => {
     const persona = personas.find((p) => p.id === personaId);
     if (!persona) return;
@@ -77,17 +76,27 @@ const Principal = () => {
     const nuevaFecha = new Date(persona.fecha);
     nuevaFecha.setMonth(nuevaFecha.getMonth() + 1);
 
-    // Convertir la fecha a un string en formato YYYY-MM-DD
+    // Mes del pago (antes de la nueva fecha)
+    const mesPago = new Date(persona.fecha).toLocaleString("es-ES", { month: "long" });
+
+    // Convertir la nueva fecha a un string en formato YYYY-MM-DD
     const fechaString = nuevaFecha.toISOString().split("T")[0];
 
-    // Actualizar el atributo "mensualidad" a false y registrar el método de pago
+    // Crear un nuevo objeto de pago donde el nombre del campo es el mes y el valor es el metodoPago
+    const updatedPago = {
+      ...persona.pago, // Mantener los pagos anteriores
+      [mesPago]: metodoPago, // El campo es el mes y el valor es el metodoPago
+    };
+
+    // Actualizar el atributo "mensualidad" a false, "fecha" y registrar el pago
     const updatedPersona = {
       ...persona,
       mensualidad: false,
       fecha: fechaString,
-      metodoPago,
+      pago: updatedPago, // Se asigna el nuevo objeto de pago
     };
-    await updatePersona(personaId, updatedPersona);
+
+    await updatePersona(personaId, updatedPersona); // Actualizar en la base de datos
 
     // Actualizar la lista de personas después del pago
     const updatedPersonas = personas.map((p) =>
