@@ -15,6 +15,7 @@ const Clases = () => {
   const [clases, setClases] = useState([]);
   const [searchId, setSearchId] = useState("");
   const [filteredClases, setFilteredClases] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     showClases();
@@ -27,39 +28,35 @@ const Clases = () => {
     });
   };
 
-  const handleAddClase = async () => {
+  const handleSaveClase = async () => {
     if (!claseId || !nombreClase || !fechaClase || !horaClase) {
       alert("Por favor, completa todos los campos.");
       return;
     }
 
     const claseData = { nombre: nombreClase, fecha: fechaClase, hora: horaClase };
-    await createClase(claseId, claseData);
+
+    if (isEditing) {
+      await updateClase(claseId, claseData);
+    } else {
+      await createClase(claseId, claseData);
+    }
+
     showClases();
-    setClaseId("");
-    setNombreClase("");
-    setFechaClase("");
-    setHoraClase("");
+    resetForm();
+  };
+
+  const handleEditClase = (clase) => {
+    setClaseId(clase.id);
+    setNombreClase(clase.nombre);
+    setFechaClase(clase.fecha);
+    setHoraClase(clase.hora);
+    setIsEditing(true);
   };
 
   const handleDeleteClase = async (id) => {
     await deleteClase(id);
     showClases();
-  };
-
-  const handleUpdateClase = async (id) => {
-    if (!nombreClase || !fechaClase || !horaClase) {
-      alert("Por favor, completa todos los campos.");
-      return;
-    }
-
-    const claseData = { nombre: nombreClase, fecha: fechaClase, hora: horaClase };
-    await updateClase(id, claseData);
-    showClases();
-    setClaseId("");
-    setNombreClase("");
-    setFechaClase("");
-    setHoraClase("");
   };
 
   const handleSearch = () => {
@@ -72,6 +69,14 @@ const Clases = () => {
   const handleShowAll = () => {
     setFilteredClases(clases);
     setSearchId("");
+  };
+
+  const resetForm = () => {
+    setClaseId("");
+    setNombreClase("");
+    setFechaClase("");
+    setHoraClase("");
+    setIsEditing(false);
   };
 
   return (
@@ -110,7 +115,7 @@ const Clases = () => {
                   <td>{clase.fecha}</td>
                   <td>{clase.hora}</td>
                   <td>
-                    <button onClick={() => handleUpdateClase(clase.id)} className="action-button">Editar</button>
+                    <button onClick={() => handleEditClase(clase)} className="action-button">Editar</button>
                     <button onClick={() => handleDeleteClase(clase.id)} className="action-button">Eliminar</button>
                   </td>
                 </tr>
@@ -120,13 +125,14 @@ const Clases = () => {
         </section>
 
         <section className="section">
-          <h2>Agregar Nueva Clase</h2>
+          <h2>{isEditing ? "Editar Clase" : "Agregar Nueva Clase"}</h2>
           <input
             type="text"
             value={claseId}
             onChange={(e) => setClaseId(e.target.value)}
             placeholder="ID"
             className="input-field"
+            disabled={isEditing}
           />
           <input
             type="text"
@@ -147,7 +153,12 @@ const Clases = () => {
             onChange={(e) => setHoraClase(e.target.value)}
             className="input-field"
           />
-          <button onClick={handleAddClase} className="action-button">Insertar Clase</button>
+          <button onClick={handleSaveClase} className="action-button">
+            {isEditing ? "Actualizar Clase" : "Insertar Clase"}
+          </button>
+          {isEditing && (
+            <button onClick={resetForm} className="action-button">Cancelar</button>
+          )}
         </section>
       </main>
     </div>

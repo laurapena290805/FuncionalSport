@@ -31,6 +31,8 @@ const Usuarios = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editPersonaId, setEditPersonaId] = useState("");
+  const [isAddingPersona, setIsAddingPersona] = useState(false); // Nueva variable para saber si estamos agregando o editando
+  const [isEditing, setIsEditing] = useState(false); // Variable para saber si estamos editando
 
   useEffect(() => {
     showPersonas();
@@ -49,10 +51,15 @@ const Usuarios = () => {
       return;
     }
 
+    // Sumamos 1 mes a la fecha proporcionada
+    const fechaObj = new Date(fecha);
+    fechaObj.setMonth(fechaObj.getMonth() + 1);
+    const nuevaFecha = fechaObj.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+
     const personaData = {
       nombre,
       telefono,
-      fecha,
+      fecha: nuevaFecha,
       direccion,
       grupoSanguineo,
       ocupacion,
@@ -70,11 +77,13 @@ const Usuarios = () => {
       sistemaInmunitarioDebilitado,
       plan,
       diasSeleccionados,
+      mensualidad, // Mensualidad por defecto
     };
 
     await createPersona(id, personaData);
     showPersonas();
     resetFields();
+    setIsAddingPersona(false); // Cerrar formulario después de agregar
   };
 
   const handleDelete = async (personaId) => {
@@ -82,7 +91,7 @@ const Usuarios = () => {
     showPersonas();
   };
 
-  const handleUpdate = async (personaId) => {
+  const handleUpdate = async () => {
     if (!nombre || !telefono || !fecha) {
       alert("Por favor, completa todos los campos obligatorios.");
       return;
@@ -111,10 +120,11 @@ const Usuarios = () => {
       diasSeleccionados,
     };
 
-    await updatePersona(personaId, personaData);
+    await updatePersona(editPersonaId, personaData);
     showPersonas();
     resetFields();
     setIsModalOpen(false);
+    setIsEditing(false); // Cambiar el estado para indicar que ya no estamos editando
   };
 
   const resetFields = () => {
@@ -165,6 +175,7 @@ const Usuarios = () => {
     setDiasSeleccionados(persona.diasSeleccionados);
     setEditPersonaId(persona.id);
     setIsModalOpen(true);
+    setIsEditing(true); // Cambiar el estado para saber que estamos editando
   };
 
   const handleSearch = () => {
@@ -237,118 +248,59 @@ const Usuarios = () => {
               ))}
             </tbody>
           </table>
-        </section>
 
-        <section className="section">
-          <h2>Agregar Nueva Persona</h2>
-          <input type="text" value={id} onChange={(e) => setId(e.target.value)} placeholder="ID" className="input-field" />
-          <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre" className="input-field" />
-          <input type="text" value={telefono} onChange={(e) => setTelefono(e.target.value)} placeholder="Teléfono" className="input-field" />
-          <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} className="input-field" />
-          <input type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} placeholder="Dirección" className="input-field" />
-          <input type="text" value={grupoSanguineo} onChange={(e) => setGrupoSanguineo(e.target.value)} placeholder="Grupo Sanguíneo" className="input-field" />
-          <input type="text" value={ocupacion} onChange={(e) => setOcupacion(e.target.value)} placeholder="Ocupación" className="input-field" />
-          <input type="text" value={talla} onChange={(e) => setTalla(e.target.value)} placeholder="Talla" className="input-field" />
-          <input type="text" value={nivelEstudio} onChange={(e) => setNivelEstudio(e.target.value)} placeholder="Nivel de Estudio" className="input-field" />
-          <input
-        type="text"
-        value={nivelEstudio}
-        onChange={(e) => setNivelEstudio(e.target.value)}
-        placeholder="Nivel de Estudio"
-        className="input-field"
-      />
-      <input
-        type="text"
-        value={eps}
-        onChange={(e) => setEps(e.target.value)}
-        placeholder="EPS"
-        className="input-field"
-      />
-      <input
-        type="text"
-        value={arl}
-        onChange={(e) => setArl(e.target.value)}
-        placeholder="ARL"
-        className="input-field"
-      />
-      <textarea
-        value={lesiones}
-        onChange={(e) => setLesiones(e.target.value)}
-        placeholder="Lesiones"
-        className="textarea-field"
-      />
-      <textarea
-        value={alergias}
-        onChange={(e) => setAlergias(e.target.value)}
-        placeholder="Alergias"
-        className="textarea-field"
-      />
-      <textarea
-        value={medicamentos}
-        onChange={(e) => setMedicamentos(e.target.value)}
-        placeholder="Medicamentos"
-        className="textarea-field"
-      />
-      <label>
-        <input
-          type="checkbox"
-          checked={problemasPulmonares}
-          onChange={(e) => setProblemasPulmonares(e.target.checked)}
-        />{" "}
-        Problemas Pulmonares
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          checked={enfermedadesCardiacas}
-          onChange={(e) => setEnfermedadesCardiacas(e.target.checked)}
-        />{" "}
-        Enfermedades Cardiacas
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          checked={enfermedadRenal}
-          onChange={(e) => setEnfermedadRenal(e.target.checked)}
-        />{" "}
-        Enfermedad Renal
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          checked={sistemaInmunitarioDebilitado}
-          onChange={(e) => setSistemaInmunitarioDebilitado(e.target.checked)}
-        />{" "}
-        Sistema Inmunitario Debilitado
-      </label>
-          <div className="select-container">
-            <label>Seleccionar Plan:</label>
-            <select value={plan} onChange={handlePlanChange} className="input-field">
-              <option value="plan1">Plan 1</option>
-              <option value="plan2">Plan 2</option>
-            </select>
-          </div>
+          <button onClick={() => { setIsAddingPersona(true); setIsEditing(false); }} className="action-button">Agregar Persona</button>
 
-          {plan === "plan2" && (
-            <div className="checkbox-container">
-              <label>Seleccionar días:</label>
-              <div>
-                {["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"].map((dia) => (
-                  <label key={dia}>
-                    <input
-                      type="checkbox"
-                      value={dia}
-                      checked={diasSeleccionados.includes(dia)}
-                      onChange={handleDiaChange}
-                    />
-                    {dia}
-                  </label>
-                ))}
-              </div>
-            </div>
+          {(isAddingPersona || isEditing) && (
+            <section className="section">
+              <h2>{isEditing ? "Editar Persona" : "Agregar Nueva Persona"}</h2>
+              <input type="text" value={id} onChange={(e) => setId(e.target.value)} placeholder="ID" className="input-field" />
+              <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre" className="input-field" />
+              <input type="text" value={telefono} onChange={(e) => setTelefono(e.target.value)} placeholder="Teléfono" className="input-field" />
+              <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} className="input-field" />
+              <input type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} placeholder="Dirección" className="input-field" />
+              <input type="text" value={grupoSanguineo} onChange={(e) => setGrupoSanguineo(e.target.value)} placeholder="Grupo Sanguíneo" className="input-field" />
+              <input type="text" value={ocupacion} onChange={(e) => setOcupacion(e.target.value)} placeholder="Ocupación" className="input-field" />
+              <input type="text" value={talla} onChange={(e) => setTalla(e.target.value)} placeholder="Talla" className="input-field" />
+              <input type="text" value={nivelEstudio} onChange={(e) => setNivelEstudio(e.target.value)} placeholder="Nivel de Estudio" className="input-field" />
+
+              <label>
+                <input
+                  type="checkbox"
+                  checked={problemasPulmonares}
+                  onChange={(e) => setProblemasPulmonares(e.target.checked)}
+                />{" "}
+                Problemas Pulmonares
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={enfermedadesCardiacas}
+                  onChange={(e) => setEnfermedadesCardiacas(e.target.checked)}
+                />{" "}
+                Enfermedades Cardiacas
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={enfermedadRenal}
+                  onChange={(e) => setEnfermedadRenal(e.target.checked)}
+                />{" "}
+                Enfermedad Renal
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={sistemaInmunitarioDebilitado}
+                  onChange={(e) => setSistemaInmunitarioDebilitado(e.target.checked)}
+                />{" "}
+                Sistema Inmunitario Debilitado
+              </label>
+              <button onClick={isEditing ? handleUpdate : handleAddPersona} className="action-button">
+                {isEditing ? "Actualizar Persona" : "Agregar Persona"}
+              </button>
+            </section>
           )}
-
-          <button onClick={handleAddPersona} className="action-button">Agregar Persona</button>
         </section>
       </main>
     </div>

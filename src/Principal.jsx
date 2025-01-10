@@ -11,16 +11,16 @@ import "./Principal.css";
 const Principal = () => {
   const [clases, setClases] = useState([]);
   const [filteredClases, setFilteredClases] = useState([]);
-
   const [personas, setPersonas] = useState([]);
   const [filteredPersonas, setFilteredPersonas] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [inscritosClase, setInscritosClase] = useState([]);
 
   useEffect(() => {
     showClases();
     showPersonas();
   }, []);
 
-  // Mostrar clases
   const showClases = () => {
     getClases().then((data) => {
       setClases(data);
@@ -28,42 +28,35 @@ const Principal = () => {
     });
   };
 
-  // Mostrar personas
   const showPersonas = () => {
     getPersonas().then((data) => {
       setPersonas(data);
-      updateMensualidades(data); // Actualizar mensualidades de las personas
+      updateMensualidades(data);
     });
   };
 
-  // Actualizar mensualidad de personas próximas a vencer
   const updateMensualidades = async (data) => {
     const today = new Date();
-
     const updatedPersonas = await Promise.all(
       data.map(async (persona) => {
-        const vencimiento = new Date(persona.fecha); // Convertir fecha de string a Date
+        const vencimiento = new Date(persona.fecha);
         const diferenciaDias = Math.ceil(
           (vencimiento - today) / (1000 * 60 * 60 * 24)
-        ); // Diferencia en días
-
-        // Validar si está dentro de los 10 días antes, el mismo día o hasta 5 días después
+        );
         const isCloseToExpiry =
           diferenciaDias >= -10 &&
           diferenciaDias <= 5 &&
           (vencimiento.getMonth() === today.getMonth() ||
             vencimiento.getMonth() === today.getMonth() + 1 ||
-            (vencimiento.getMonth() === 0 && today.getMonth() === 11)); // Caso especial para diciembre-enero
-
+            (vencimiento.getMonth() === 0 && today.getMonth() === 11));
         if (isCloseToExpiry && !persona.mensualidad) {
           const updatedPersona = { ...persona, mensualidad: true };
-          await updatePersona(persona.id, updatedPersona); // Actualizar en la base de datos
+          await updatePersona(persona.id, updatedPersona);
           return updatedPersona;
         }
         return persona;
       })
     );
-
     setPersonas(updatedPersonas);
     setFilteredPersonas(updatedPersonas.filter((persona) => persona.mensualidad));
   };
@@ -72,33 +65,24 @@ const Principal = () => {
     const persona = personas.find((p) => p.id === personaId);
     if (!persona) return;
 
-    // Agregar un mes a la fecha
     const nuevaFecha = new Date(persona.fecha);
     nuevaFecha.setMonth(nuevaFecha.getMonth() + 1);
-
-    // Mes del pago (antes de la nueva fecha)
     const mesPago = new Date(persona.fecha).toLocaleString("es-ES", { month: "long" });
-
-    // Convertir la nueva fecha a un string en formato YYYY-MM-DD
     const fechaString = nuevaFecha.toISOString().split("T")[0];
 
-    // Crear un nuevo objeto de pago donde el nombre del campo es el mes y el valor es el metodoPago
     const updatedPago = {
-      ...persona.pago, // Mantener los pagos anteriores
-      [mesPago]: metodoPago, // El campo es el mes y el valor es el metodoPago
+      ...persona.pago,
+      [mesPago]: metodoPago,
     };
 
-    // Actualizar el atributo "mensualidad" a false, "fecha" y registrar el pago
     const updatedPersona = {
       ...persona,
       mensualidad: false,
       fecha: fechaString,
-      pago: updatedPago, // Se asigna el nuevo objeto de pago
+      pago: updatedPago,
     };
 
-    await updatePersona(personaId, updatedPersona); // Actualizar en la base de datos
-
-    // Actualizar la lista de personas después del pago
+    await updatePersona(personaId, updatedPersona);
     const updatedPersonas = personas.map((p) =>
       p.id === personaId ? updatedPersona : p
     );
@@ -108,9 +92,18 @@ const Principal = () => {
     );
   };
 
+  const handleVerInscritos = (clase) => {
+    // Los inscritos son un array de nombres de personas
+    setInscritosClase(clase.inscritos || []); // Aseguramos que sea un array vacío si no hay inscritos
+    setModalVisible(true); // Abre el modal
+  };
+
+  const closeModal = () => {
+    setModalVisible(false); // Cierra el modal
+  };
+
   return (
     <div>
-      {/* Clases del día */}
       <section className="section">
         <h2>Clases del día</h2>
         <table className="table">
@@ -128,14 +121,21 @@ const Principal = () => {
                 <td>{clase.nombre}</td>
                 <td>{clase.fecha}</td>
                 <td>{clase.hora}</td>
-                <td>{clase.inscritos?.length || 0}</td>
+                <td>
+                  {clase.inscritos?.length || 0}{" "}
+                  <button
+                    onClick={() => handleVerInscritos(clase)}
+                    className="btn btn-info"
+                  >
+                    Ver
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </section>
 
-      {/* Mensualidades a vencer */}
       <section className="section">
         <h2>Mensualidades a vencer</h2>
         <table className="table">
@@ -178,6 +178,27 @@ const Principal = () => {
           </tbody>
         </table>
       </section>
+
+      {/* Modal para mostrar inscritos */}
+      {modalVisible && (
+        <div className="modal">
+          <div className="modal-content">
+            <h3>Inscritos en la clase</h3>
+            <ul>
+              {inscritosClase.length > 0 ? (
+                inscritosClase.map((inscrito, index) => (
+                  <li key={index}>{inscrito}</li> // Aquí renderizamos el nombre directamente
+                ))
+              ) : (
+                <li>No hay inscritos en esta clase.</li>
+              )}
+            </ul>
+            <button onClick={closeModal} className="btn btn-close">
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

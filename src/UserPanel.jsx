@@ -8,8 +8,8 @@ import "./UserPanel.css";
 const UserPanel = () => {
   const { userId } = useParams();
   const [userData, setUserData] = useState(null);
-  const [availableClasses, setAvailableClasses] = useState([]);
-  const [registeredClasses, setRegisteredClasses] = useState([]);
+  const [availableClasses, setAvailableClasses] = useState([]); // Clases disponibles para inscribirse
+  const [registeredClasses, setRegisteredClasses] = useState([]); // Clases en las que el usuario está registrado
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
@@ -19,17 +19,18 @@ const UserPanel = () => {
         const user = await getPersonaById(userId); // Obtiene datos del usuario
         setUserData(user);
 
-        const classes = await getClases(); // Obtiene todas las clases
+        const classes = await getClases(); // Obtiene todas las clases desde la base de datos
+        console.log(classes); // Agregar log para ver las clases
 
         // Separar clases registradas y disponibles
         const registered = [];
         const available = [];
 
         classes.forEach((clase) => {
-          if (clase.inscritos.includes(user.nombre)) {
-            registered.push(clase);
+          if (clase.inscritos && clase.inscritos.includes(user.nombre)) {
+            registered.push(clase); // Si el usuario ya está inscrito en la clase
           } else {
-            available.push(clase);
+            available.push(clase); // Si la clase está disponible para inscripción
           }
         });
 
@@ -51,12 +52,12 @@ const UserPanel = () => {
         const classRef = doc(db, "clases", classId);
 
         await updateDoc(classRef, {
-          inscritos: arrayUnion(userData.nombre),
+          inscritos: arrayUnion(userData.nombre), // Añadir el nombre del usuario a la lista de inscritos
         });
 
         // Actualizar estado local
-        setRegisteredClasses([...registeredClasses, selectedClass]);
-        setAvailableClasses(availableClasses.filter((clase) => clase.id !== classId));
+        setRegisteredClasses([...registeredClasses, selectedClass]); // Añadir a las clases registradas
+        setAvailableClasses(availableClasses.filter((clase) => clase.id !== classId)); // Eliminar de las clases disponibles
 
         console.log(`Usuario ${userData.nombre} registrado en la clase ${classId}`);
       } catch (error) {
@@ -79,11 +80,20 @@ const UserPanel = () => {
     const diffDays = Math.ceil((membershipDate - today) / (1000 * 60 * 60 * 24));
 
     if (diffDays < 0) {
-      return { status: "VENCIDA", color: "red" }; // Fecha ya pasó
+      return { 
+        status: `VENCIDA desde ${Math.abs(diffDays)} días`, 
+        color: "red" 
+      }; // Fecha ya pasó
     } else if (diffDays <= 10) {
-      return { status: "PRÓXIMA A VENCER", color: "orange" }; // Faltan 10 días o menos
+      return { 
+        status: `PRÓXIMA A VENCER en ${diffDays} días`, 
+        color: "orange" 
+      }; // Faltan 10 días o menos
     } else {
-      return { status: "AL DÍA", color: "green" }; // Más de 10 días restantes
+      return { 
+        status: `AL DÍA con ${diffDays} días restantes`, 
+        color: "green" 
+      }; // Más de 10 días restantes
     }
   };
 
@@ -171,7 +181,17 @@ const UserPanel = () => {
               </tbody>
             </table>
           </div>
-          <div className="membership-status" style={{ color: membershipStatus.color }}>
+          <div className="membership-status" style={{
+            color: membershipStatus.color,
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+            padding: "20px",
+            borderRadius: "10px",
+            fontSize: "1.5em",
+            fontWeight: "bold",
+            textAlign: "center",
+            width: "100%",
+            margin: "20px 0"
+          }}>
             <h2>Estado de la Membresía</h2>
             <p>
               <strong>Membresía:</strong> {membershipStatus.status}
@@ -191,6 +211,23 @@ const UserPanel = () => {
                 <p><strong>Nombre:</strong> {userData.nombre}</p>
                 <p><strong>Teléfono:</strong> {userData.telefono}</p>
                 <p><strong>Fecha:</strong> {userData.fecha}</p>
+                <p><strong>Dirección:</strong> {userData.direccion}</p>
+                <p><strong>Grupo Sanguíneo:</strong> {userData.grupoSanguineo}</p>
+                <p><strong>Ocupación:</strong> {userData.ocupacion}</p>
+                <p><strong>Talla:</strong> {userData.talla}</p>
+                <p><strong>Nivel de Estudio:</strong> {userData.nivelEstudio}</p>
+                <p><strong>Familiares:</strong> {JSON.stringify(userData.familiares)}</p>
+                <p><strong>EPS:</strong> {userData.eps}</p>
+                <p><strong>ARL:</strong> {userData.arl}</p>
+                <p><strong>Lesiones:</strong> {userData.lesiones}</p>
+                <p><strong>Alergias:</strong> {userData.alergias}</p>
+                <p><strong>Medicamentos:</strong> {userData.medicamentos}</p>
+                <p><strong>Problemas Pulmonares:</strong> {userData.problemasPulmonares ? "Sí" : "No"}</p>
+                <p><strong>Enfermedades Cardiacas:</strong> {userData.enfermedadesCardiacas ? "Sí" : "No"}</p>
+                <p><strong>Enfermedad Renal:</strong> {userData.enfermedadRenal ? "Sí" : "No"}</p>
+                <p><strong>Sistema Inmunitario Debilitado:</strong> {userData.sistemaInmunitarioDebilitado ? "Sí" : "No"}</p>
+                <p><strong>Plan:</strong> {userData.plan}</p>
+                <p><strong>Días Seleccionados:</strong> {JSON.stringify(userData.diasSeleccionados)}</p>
               </>
             ) : (
               <p>Cargando datos...</p>
