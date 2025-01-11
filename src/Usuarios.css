@@ -7,6 +7,10 @@
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra horizontalmente */
+  text-align: center; /* Centra texto */
 }
 
 /* Heading */
@@ -19,36 +23,51 @@ h1 {
 h2 {
   margin-top: 20px;
   color: #555;
+  text-align: center; /* Centra texto */
 }
 
-/* Search input and buttons */
-.search-container {
+.section {
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  flex-direction: column;
+  align-items: center; /* Centra los elementos */
 }
 
-.search-input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  justify-content: center; /* Centra las columnas */
+  text-align: center; /* Centra texto */
+}
+
+.form-plan {
+  margin-top: 20px;
+  text-align: center;
 }
 
 /* Table styling */
-.person-table {
+.person-table-container {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
   width: 100%;
+}
+
+.person-table {
+  width: auto;
   border-collapse: collapse;
   margin-top: 20px;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Centra texto dentro de la tabla */
 }
 
 .person-table th,
 .person-table td {
   padding: 10px;
-  text-align: left;
+  text-align: center; /* Centra contenido en las celdas */
   border: 1px solid #ddd;
 }
 
@@ -60,19 +79,7 @@ h2 {
   background-color: #f1f1f1;
 }
 
-/* Formulario para agregar personas */
-.form-container {
-  margin-top: 20px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
-  justify-items: center; /* Centra todo el contenido dentro de la columna */
-}
-
+/* Inputs y botones: No se modifican */
 .input-field {
   width: 100%;
   padding: 12px;
@@ -80,7 +87,7 @@ h2 {
   border-radius: 8px;
   margin-bottom: 15px;
   font-size: 16px;
-  text-align: center;  /* Centra el texto en el input */
+  text-align: center;
 }
 
 .textarea-field {
@@ -90,8 +97,8 @@ h2 {
   border-radius: 8px;
   margin-bottom: 15px;
   font-size: 16px;
-  text-align: center;  /* Centra el texto en el textarea */
-  resize: none; /* Evita el cambio de tamaño manual */
+  text-align: center;
+  resize: none;
 }
 
 .action-button {
@@ -106,7 +113,7 @@ h2 {
   margin-top: 10px;
   grid-column: span 2;
   text-align: center;
-  justify-self: center; /* Centra el botón dentro de la columna */
+  justify-self: center;
 }
 
 .action-button:hover {
@@ -115,16 +122,36 @@ h2 {
 
 /* Modal styling */
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
-  justify-content: center;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra todos los elementos dentro */
+}
+
+/* Buttons */
+.button-container {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  margin-top: 20px;
+}
+
+.search-container {
+  display: flex;
   align-items: center;
-  z-index: 1000;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .modal-content {
@@ -182,6 +209,7 @@ h2 {
   transform: scale(1.2);  /* Aumenta el tamaño del checkbox */
   justify-self: center; /* Centra los checkboxes dentro de su contenedor */
 }
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
