@@ -132,3 +132,39 @@ export const registerPago = async (mes, metodoPago, plan) => {
       throw error;
     }
   };
+
+
+
+const collectionName2 = "ventas";
+
+// Create con ID personalizado
+export const createVentas = async (id, obj) => {
+    const docRef = doc(db, collectionName2, id);
+    await setDoc(docRef, obj); // setDoc en lugar de addDoc para un ID personalizado
+}
+
+// Update
+export const updateVentas = async (id, obj) => {
+    const docRef = doc(db, collectionName2, id);
+    await updateDoc(docRef, obj);
+}
+
+// Read todas las personas
+export const getVentas = async () => {
+    const colRef = collection(db, collectionName2);
+    const result = await getDocs(query(colRef));
+    return getArrayFromCollection(result);
+}
+
+// Read por ID
+export const getVentaById = async (id) => {
+    const docRef = doc(db, collectionName2, id);
+    const docSnap = await getDoc(docRef);
+    return docSnap.data();
+}
+
+// Delete
+export const deleteVenta = async (id) => {
+    const docRef = doc(db, collectionName2, id);
+    await deleteDoc(docRef);
+}
