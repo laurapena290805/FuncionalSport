@@ -13,6 +13,7 @@ const Ventas = () => {
   const [selectedProducto, setSelectedProducto] = useState("");
   const [tipoPago, setTipoPago] = useState("pTransferencia");
   const [cantidad, setCantidad] = useState(1);
+  const [selectedMonth, setSelectedMonth] = useState(""); // Estado para el mes seleccionado
 
   useEffect(() => {
     const fetchVentas = async () => {
@@ -24,10 +25,14 @@ const Ventas = () => {
 
   const handleAddProducto = async () => {
     if (!newProducto) return alert("El nombre del producto es requerido");
+    const fechaActual = new Date();
+    const mesAnio = `${fechaActual.getMonth() + 1}-${fechaActual.getFullYear()}`;
+
     const nuevoProducto = {
       vendidas: 0,
       pTransferencia: 0,
       pEfectivo: 0,
+      mesAnio, // Añadimos el mes y año
     };
     await createVentas(newProducto, nuevoProducto);
     setVentas([...ventas, { id: newProducto, ...nuevoProducto }]);
@@ -42,9 +47,13 @@ const Ventas = () => {
     const producto = ventas.find((venta) => venta.id === selectedProducto);
     if (!producto) return alert("Producto no encontrado");
 
+    const fechaActual = new Date();
+    const mesAnio = `${fechaActual.getMonth() + 1}-${fechaActual.getFullYear()}`;
+
     const updatedProducto = {
       vendidas: producto.vendidas + cantidad,
       [tipoPago]: producto[tipoPago] + cantidad,
+      mesAnio, // Añadimos el mes y año
     };
 
     await updateVentas(selectedProducto, updatedProducto);
@@ -66,6 +75,7 @@ const Ventas = () => {
       vendidas: 0,
       pTransferencia: 0,
       pEfectivo: 0,
+      mesAnio: `${new Date().getMonth() + 1}-${new Date().getFullYear()}`, // Reseteamos el mes actual
     };
     await updateVentas(id, resetProducto);
     setVentas(
@@ -75,9 +85,33 @@ const Ventas = () => {
     );
   };
 
+  // Filtrar las ventas por mes seleccionado, pero siempre mostrar todos los productos
+  const filteredVentas = ventas.map((venta) => {
+    if (selectedMonth && venta.mesAnio !== selectedMonth) {
+      return { ...venta, pTransferencia: 0, pEfectivo: 0, vendidas: 0 }; // Si no se vendieron productos, asignamos 0
+    }
+    return venta;
+  });
+
   return (
     <div className="ventas-page">
       <h1>Gestión de Ventas</h1>
+
+      {/* Selección de mes */}
+      <section>
+        <h2>Filtrar por Mes</h2>
+        <select onChange={(e) => setSelectedMonth(e.target.value)} value={selectedMonth}>
+          <option value="">Selecciona un mes</option>
+          {ventas
+            .map((venta) => venta.mesAnio)
+            .filter((value, index, self) => self.indexOf(value) === index)
+            .map((mes) => (
+              <option key={mes} value={mes}>
+                {mes}
+              </option>
+            ))}
+        </select>
+      </section>
 
       {/* Tabla */}
       <section>
@@ -93,7 +127,7 @@ const Ventas = () => {
             </tr>
           </thead>
           <tbody>
-            {ventas.map((venta) => (
+            {filteredVentas.map((venta) => (
               <tr key={venta.id}>
                 <td>{venta.id}</td>
                 <td>{venta.vendidas}</td>

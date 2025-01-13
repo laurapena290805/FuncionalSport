@@ -1,0 +1,136 @@
+/* Encabezado principal */
+.ventas-page h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #2d572c; /* Verde oscuro */
+  }
+  
+  /* Sección general */
+  .ventas-page section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  
+  /* Encabezados de sección */
+  .ventas-page section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #2d572c; /* Verde oscuro */
+    text-align: left;
+    border-left: 4px solid #2d572c; /* Línea verde oscuro */
+    padding-left: 0.5rem;
+  }
+  
+  /* Tabla */
+  .ventas-page .ventas-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .ventas-page .ventas-table th,
+  .ventas-page .ventas-table td {
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+  
+  .ventas-page .ventas-table th {
+    background-color: #2d572c; /* Verde oscuro */
+    color: white;
+    font-weight: bold;
+  }
+  
+  .ventas-page .ventas-table td {
+    background-color: #fff;
+  }
+  
+  .ventas-page .ventas-table tr:nth-child(even) td {
+    background-color: #eaf5e7; /* Verde claro */
+  }
+  
+  /* Botones */
+  .ventas-page button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  .ventas-page .btn-delete {
+    background-color: #e74c3c; /* Rojo */
+    color: white;
+  }
+  
+  .ventas-page .btn-delete:hover {
+    background-color: #c0392b; /* Rojo oscuro */
+  }
+  
+  .ventas-page .btn-reset {
+    background-color: #f1c40f; /* Amarillo */
+    color: white;
+  }
+  
+  .ventas-page .btn-reset:hover {
+    background-color: #d4ac0d; /* Amarillo oscuro */
+  }
+  
+  .ventas-page .form-elements button {
+    background-color: #2d572c; /* Verde oscuro */
+    color: white;
+  }
+  
+  .ventas-page .form-elements button:hover {
+    background-color: #1e3e1f; /* Verde más oscuro */
+  }
+  
+  /* Formularios */
+  .ventas-page .form-section {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .ventas-page .form-elements {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .ventas-page .form-elements input,
+  .ventas-page .form-elements select {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 150px;
+  }
+  
+  /* Filtrar por mes */
+  .ventas-page select {
+    font-size: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 200px;
+  }
+  
+  /* Respuesta para pantallas pequeñas */
+  @media (max-width: 768px) {
+    .ventas-page .form-elements {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  
+    .ventas-page .ventas-table th,
+    .ventas-page .ventas-table td {
+      font-size: 0.9rem;
+      padding: 0.5rem;
+    }
+  }
+  
