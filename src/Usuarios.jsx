@@ -28,6 +28,8 @@ const Usuarios = () => {
   const [plan, setPlan] = useState("plan1");
   const [diasSeleccionados, setDiasSeleccionados] = useState([]);
 
+  const [metodoPago, setMetodoPago] = useState("transferencia");
+  const [pago, setPago] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editPersonaId, setEditPersonaId] = useState("");
   const [isAddingPersona, setIsAddingPersona] = useState(false);
@@ -49,17 +51,37 @@ const Usuarios = () => {
       alert("Por favor, completa todos los campos obligatorios.");
       return;
     }
-
+  
+    // Guardar la fecha original proporcionada por el usuario
+    const fechaUsuario = new Date(fecha);
+  
+    // Obtener el mes en formato textual y en minúsculas
+    const mesPago = fechaUsuario.toLocaleString("es-ES", { month: "long" }).toLowerCase();
+  
+    // Primero, actualizar el mapa de pagos con el mes del usuario
+    const updatedPago = { ...pago, [mesPago]: metodoPago };
+  
+    // Sumar un mes a la fecha proporcionada
+    fechaUsuario.setMonth(fechaUsuario.getMonth() + 1);
+  
+    // Convertir la fecha a string en formato "YYYY-MM-DD" después de agregar el mes
+    const fechaConMesSumado = fechaUsuario.toISOString().split('T')[0];
+  
+    // Crear el objeto persona con la información
     const personaData = {
-      nombre, telefono, fecha, direccion, grupoSanguineo, ocupacion, talla, nivelEstudio, eps, arl, lesiones, alergias, medicamentos,
-      problemasPulmonares, enfermedadesCardiacas, enfermedadRenal, sistemaInmunitarioDebilitado, plan, diasSeleccionados,
+      nombre, telefono, fecha: fechaConMesSumado, direccion, grupoSanguineo, ocupacion, talla, nivelEstudio, eps, arl, lesiones, alergias, medicamentos,
+      problemasPulmonares, enfermedadesCardiacas, enfermedadRenal, sistemaInmunitarioDebilitado, plan, diasSeleccionados, pago: updatedPago,
+      mensualidad: false,  // Establecer mensualidad como false al agregar
     };
-
+  
+    // Crear la persona en la base de datos
     await createPersona(id, personaData);
     showPersonas();
     resetFields();
     setIsAddingPersona(false); 
   };
+  
+  
 
   const handleDelete = async (personaId) => {
     await deletePersona(personaId);
@@ -71,6 +93,13 @@ const Usuarios = () => {
       alert("Por favor, completa todos los campos obligatorios.");
       return;
     }
+    const mesPago = new Date(fecha).toLocaleString("es-ES", { month: "long" }).toLowerCase();
+    const updatedPago = { ...pago, [mesPago]: metodoPago };
+
+    const personaData = {
+      nombre, telefono, fecha, direccion, grupoSanguineo, ocupacion, talla, nivelEstudio, eps, arl, lesiones, alergias, medicamentos,
+      problemasPulmonares, enfermedadesCardiacas, enfermedadRenal, sistemaInmunitarioDebilitado, plan, diasSeleccionados, pago: updatedPago,
+    };
 
     await updatePersona(editPersonaId, personaData);
     showPersonas();
@@ -100,6 +129,8 @@ const Usuarios = () => {
     setSistemaInmunitarioDebilitado(false);
     setPlan("plan1");
     setDiasSeleccionados([]);
+    setMetodoPago("transferencia");
+    setPago({});
   };
 
   const openEditModal = (persona) => {
@@ -123,6 +154,8 @@ const Usuarios = () => {
     setSistemaInmunitarioDebilitado(persona.sistemaInmunitarioDebilitado);
     setPlan(persona.plan);
     setDiasSeleccionados(persona.diasSeleccionados);
+    setMetodoPago(persona.pago ? Object.values(persona.pago)[0] : "transferencia");
+    setPago(persona.pago || {});
     setEditPersonaId(persona.id);
     setIsModalOpen(true);
     setIsEditing(true);
@@ -220,6 +253,18 @@ const Usuarios = () => {
                   <input type="text" value={lesiones} onChange={(e) => setLesiones(e.target.value)} placeholder="Lesiones" className="input-field" />
                   <input type="text" value={alergias} onChange={(e) => setAlergias(e.target.value)} placeholder="Alergias" className="input-field" />
                   <input type="text" value={medicamentos} onChange={(e) => setMedicamentos(e.target.value)} placeholder="Medicamentos" className="input-field" />
+              </div>
+
+              <div>
+              <select
+                  value={metodoPago}
+                  onChange={(e) => setMetodoPago(e.target.value)}
+                  disabled={isEditing} // Desactivado al editar
+                >
+                  <option value="transferencia">Transferencia</option>
+                  <option value="efectivo">Efectivo</option>
+                  <option value="otro">Otro</option>
+                </select>
               </div>
 
               <div className="form-section">
