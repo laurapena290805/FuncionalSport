@@ -4,7 +4,7 @@ import {
   getClases,
   deleteClase,
   updateClase,
-} from "./services/api"; // Asegúrate de que estos métodos estén correctamente definidos en tu archivo API
+} from "./services/api"; // Archivo API
 import "./Clases.css"; // Opcional, para estilos personalizados
 
 const Clases = () => {
@@ -59,6 +59,36 @@ const Clases = () => {
     showClases();
   };
 
+  const handleDeleteInscritos = async () => {
+    if (!claseId) {
+      alert("No hay una clase seleccionada para eliminar inscritos.");
+      return;
+    }
+
+    const confirmDelete = window.confirm(
+      "¿Estás seguro de que deseas eliminar todos los inscritos de esta clase?"
+    );
+
+    if (confirmDelete) {
+      try {
+        // Actualizamos el array de inscritos de la clase seleccionada
+        const updatedClase = {
+          nombre: nombreClase,
+          fecha: fechaClase,
+          hora: horaClase,
+          inscritos: [], // Vaciar array de inscritos
+        };
+
+        await updateClase(claseId, updatedClase); // Actualizamos la clase en la base de datos
+        alert("Todos los inscritos han sido eliminados.");
+        showClases(); // Refrescamos las clases
+      } catch (error) {
+        console.error("Error al eliminar inscritos:", error);
+        alert("Hubo un problema al intentar eliminar los inscritos.");
+      }
+    }
+  };
+
   const handleSearch = () => {
     const results = clases.filter((clase) =>
       clase.id.toString().includes(searchId)
@@ -93,8 +123,12 @@ const Clases = () => {
               placeholder="Buscar por ID"
               className="search-input"
             />
-            <button onClick={handleSearch} className="action-button">Buscar</button>
-            <button onClick={handleShowAll} className="action-button">Mostrar Todo</button>
+            <button onClick={handleSearch} className="action-button">
+              Buscar
+            </button>
+            <button onClick={handleShowAll} className="action-button">
+              Mostrar Todo
+            </button>
           </div>
 
           <table className="table">
@@ -115,8 +149,18 @@ const Clases = () => {
                   <td>{clase.fecha}</td>
                   <td>{clase.hora}</td>
                   <td>
-                    <button onClick={() => handleEditClase(clase)} className="action-button">Editar</button>
-                    <button onClick={() => handleDeleteClase(clase.id)} className="action-button">Eliminar</button>
+                    <button
+                      onClick={() => handleEditClase(clase)}
+                      className="action-button"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClase(clase.id)}
+                      className="action-button"
+                    >
+                      Eliminar
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -157,7 +201,14 @@ const Clases = () => {
             {isEditing ? "Actualizar Clase" : "Insertar Clase"}
           </button>
           {isEditing && (
-            <button onClick={resetForm} className="action-button">Cancelar</button>
+            <>
+              <button onClick={handleDeleteInscritos} className="action-button">
+                Eliminar Inscritos
+              </button>
+              <button onClick={resetForm} className="action-button">
+                Cancelar
+              </button>
+            </>
           )}
         </section>
       </main>

@@ -168,3 +168,13 @@ export const deleteVenta = async (id) => {
     const docRef = doc(db, collectionName2, id);
     await deleteDoc(docRef);
 }
+
+const collectionName3 = "credenciales";
+
+
+// Read todas las personas
+export const getCredenciales = async () => {
+    const colRef = collection(db, collectionName3);
+    const result = await getDocs(query(colRef));
+    return getArrayFromCollection(result);
+}

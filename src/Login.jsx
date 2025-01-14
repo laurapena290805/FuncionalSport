@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Login.css"; // Asegúrate de tener el CSS
+import { getCredenciales } from "./services/api"; // Importa el método para obtener credenciales
+import "./Login.css";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -10,20 +11,31 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validación de administrador
-    if (username === "admin" && password === "admin") {
-      console.log("Acceso como administrador");
-      navigate("/admin"); // Redirige al panel de administrador
-      return;
-    }
+    try {
+      // Obtén las credenciales de los administradores desde la base de datos
+      const admins = await getCredenciales();
+      const adminFound = admins.find(
+        (admin) => admin.usuario === username && admin.contraseña === password
+      );
 
-    // Validación de usuario común
-    if (username && password) {
-      // Aquí podrías validar las credenciales en tu backend si es necesario
-      console.log("Acceso como usuario");
-      navigate(`/user/${username}`); // Navega pasando el ID del usuario como parte de la URL
-    } else {
-      alert("Por favor, ingresa usuario y contraseña válidos.");
+      // Validación de administrador
+      if (adminFound) {
+        console.log("Acceso como administrador");
+        navigate("/admin"); // Redirige al panel de administrador
+        return;
+      }
+
+      // Validación de usuario común
+      if (username && password) {
+        // Aquí podrías validar las credenciales en tu backend si es necesario
+        console.log("Acceso como usuario");
+        navigate(`/user/${username}`); // Navega pasando el ID del usuario como parte de la URL
+      } else {
+        alert("Por favor, ingresa usuario y contraseña válidos.");
+      }
+    } catch (error) {
+      console.error("Error al obtener las credenciales de administradores:", error);
+      alert("Hubo un problema al iniciar sesión. Intenta nuevamente más tarde.");
     }
   };
 

@@ -27,13 +27,13 @@ const ReportesPago = () => {
   // Procesar las estadísticas por mes y método de pago
   const procesarEstadisticas = (mes) => {
     const stats = {
-      plan1: { Efectivo: 0, Transferencia: 0, ganancia: 0, precio: 100 },
-      plan2: { Efectivo: 0, Transferencia: 0, ganancia: 0, precio: 150 },
+      plan1: { Efectivo: 0, Transferencia: 0, ganancia: 0, precio: 65000 },
+      plan2: { Efectivo: 0, Transferencia: 0, ganancia: 0, precio: 75000 },
       metodosPago: { Efectivo: 0, Transferencia: 0 },
     };
 
-    const plan1Precio = 100; // Precio de Plan 1 (ajusta según sea necesario)
-    const plan2Precio = 150; // Precio de Plan 2 (ajusta según sea necesario)
+    const plan1Precio = 65000; // Precio de Plan 1 (ajusta según sea necesario)
+    const plan2Precio = 75000; // Precio de Plan 2 (ajusta según sea necesario)
 
     personas.forEach((persona) => {
       // Verificar si el mes está presente en los pagos
