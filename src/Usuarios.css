@@ -210,6 +210,25 @@ h2 {
   justify-self: center; /* Centra los checkboxes dentro de su contenedor */
 }
 
+select {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+  color: #333;
+  width: 100%;
+}
+
+select:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+option {
+  padding: 10px;
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

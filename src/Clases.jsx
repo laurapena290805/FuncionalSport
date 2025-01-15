@@ -29,7 +29,7 @@ const Clases = () => {
   };
 
   const handleSaveClase = async () => {
-    if (!claseId || !nombreClase || !fechaClase || !horaClase) {
+    if (!claseId || !nombreClase || !fechaClase ) {
       alert("Por favor, completa todos los campos.");
       return;
     }

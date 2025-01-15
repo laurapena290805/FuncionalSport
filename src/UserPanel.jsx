@@ -71,7 +71,7 @@ const UserPanel = () => {
   };
 
   const getMembershipStatus = () => {
-    if (!userData) return { status: "Cargando...", color: "gray" };
+    if (!userData) return { status: "Cargando...", color: "gray", icon: "" };
 
     const today = new Date();
     const membershipDate = new Date(userData.fecha); // Fecha de vencimiento de la membresía
@@ -82,17 +82,20 @@ const UserPanel = () => {
     if (diffDays < 0) {
       return { 
         status: `VENCIDA desde ${Math.abs(diffDays)} días`, 
-        color: "red" 
+        color: "red", 
+        icon: "❌" 
       }; // Fecha ya pasó
     } else if (diffDays <= 10) {
       return { 
         status: `PRÓXIMA A VENCER en ${diffDays} días`, 
-        color: "orange" 
+        color: "orange", 
+        icon: "⚠️" 
       }; // Faltan 10 días o menos
     } else {
       return { 
         status: `AL DÍA con ${diffDays} días restantes`, 
-        color: "green" 
+        color: "green", 
+        icon: "✔️" 
       }; // Más de 10 días restantes
     }
   };
@@ -181,20 +184,41 @@ const UserPanel = () => {
               </tbody>
             </table>
           </div>
+
           <div className="membership-status" style={{
             color: membershipStatus.color,
-            backgroundColor: "rgba(0, 0, 0, 0.1)",
-            padding: "20px",
-            borderRadius: "10px",
-            fontSize: "1.5em",
+            backgroundColor: "#f0f4f8", // Fondo más suave
+            padding: "30px",
+            borderRadius: "15px",
+            fontSize: "1.6em",
             fontWeight: "bold",
             textAlign: "center",
             width: "100%",
-            margin: "20px 0"
+            margin: "20px 0",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Sombra sutil
+            border: "1px solid #dcdfe6", // Borde suave
+            display: "flex", 
+            flexDirection: "column", 
+            alignItems: "center", 
+            gap: "10px"
           }}>
-            <h2>Estado de la Membresía</h2>
-            <p>
-              <strong>Membresía:</strong> {membershipStatus.status}
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span 
+                style={{ 
+                  fontSize: "2em", 
+                  padding: "5px", 
+                  backgroundColor: membershipStatus.color, 
+                  borderRadius: "50%", 
+                  color: "#fff" 
+                }}
+              >
+                {membershipStatus.icon}
+              </span>
+              <h2 style={{ margin: 0 }}>Estado de la Membresía</h2>
+            </div>
+
+            <p style={{ margin: 0 }}>
+              <strong>Membresía:</strong> {membershipStatus.status || "No disponible"}
             </p>
           </div>
         </section>
@@ -202,39 +226,60 @@ const UserPanel = () => {
 
       {/* Modal con los datos del usuario */}
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="modaldatos">
+          <div className="modaldatos-content">
             <h2>Datos del Usuario</h2>
             {userData ? (
               <>
-                <p><strong>ID:</strong> {userData.id}</p>
-                <p><strong>Nombre:</strong> {userData.nombre}</p>
-                <p><strong>Teléfono:</strong> {userData.telefono}</p>
-                <p><strong>Fecha:</strong> {userData.fecha}</p>
-                <p><strong>Dirección:</strong> {userData.direccion}</p>
-                <p><strong>Grupo Sanguíneo:</strong> {userData.grupoSanguineo}</p>
-                <p><strong>Ocupación:</strong> {userData.ocupacion}</p>
-                <p><strong>Talla:</strong> {userData.talla}</p>
-                <p><strong>Nivel de Estudio:</strong> {userData.nivelEstudio}</p>
-                <p><strong>Familiares:</strong> {JSON.stringify(userData.familiares)}</p>
-                <p><strong>EPS:</strong> {userData.eps}</p>
-                <p><strong>ARL:</strong> {userData.arl}</p>
-                <p><strong>Lesiones:</strong> {userData.lesiones}</p>
-                <p><strong>Alergias:</strong> {userData.alergias}</p>
-                <p><strong>Medicamentos:</strong> {userData.medicamentos}</p>
-                <p><strong>Problemas Pulmonares:</strong> {userData.problemasPulmonares ? "Sí" : "No"}</p>
-                <p><strong>Enfermedades Cardiacas:</strong> {userData.enfermedadesCardiacas ? "Sí" : "No"}</p>
-                <p><strong>Enfermedad Renal:</strong> {userData.enfermedadRenal ? "Sí" : "No"}</p>
-                <p><strong>Sistema Inmunitario Debilitado:</strong> {userData.sistemaInmunitarioDebilitado ? "Sí" : "No"}</p>
-                <p><strong>Plan:</strong> {userData.plan}</p>
-                <p><strong>Días Seleccionados:</strong> {JSON.stringify(userData.diasSeleccionados)}</p>
+                <div className="modaldatos-row">
+                  <section>
+                    <h3>Información Personal</h3>
+                    <p><strong>Nombre:</strong> {userData.nombre || "No información"}</p>
+                    <p><strong>Teléfono:</strong> {userData.telefono || "No información"}</p>
+                    <p><strong>Fecha:</strong> {userData.fecha || "No información"}</p>
+                    <p><strong>Dirección:</strong> {userData.direccion || "No información"}</p>
+                    <p><strong>Grupo Sanguíneo:</strong> {userData.grupoSanguineo || "No información"}</p>
+                    <p><strong>Ocupación:</strong> {userData.ocupacion || "No información"}</p>
+                    <p><strong>Talla:</strong> {userData.talla || "No información"}</p>
+                    <p><strong>Nivel de Estudio:</strong> {userData.nivelEstudio || "No información"}</p>
+                  </section>
+
+                  <section>
+                    <h3>Datos de Salud</h3>
+                    <p><strong>Familiares:</strong> {userData.familiares ? JSON.stringify(userData.familiares) : "No información"}</p>
+                    <p><strong>EPS:</strong> {userData.eps || "No información"}</p>
+                    <p><strong>ARL:</strong> {userData.arl || "No información"}</p>
+                    <p><strong>Lesiones:</strong> {userData.lesiones || "No información"}</p>
+                    <p><strong>Alergias:</strong> {userData.alergias || "No información"}</p>
+                    <p><strong>Medicamentos:</strong> {userData.medicamentos || "No información"}</p>
+                    <p><strong>Problemas Pulmonares:</strong> {userData.problemasPulmonares ? "Sí" : "No información"}</p>
+                    <p><strong>Enfermedades Cardiacas:</strong> {userData.enfermedadesCardiacas ? "Sí" : "No información"}</p>
+                    <p><strong>Enfermedad Renal:</strong> {userData.enfermedadRenal ? "Sí" : "No información"}</p>
+                    <p><strong>Sistema Inmunitario Debilitado:</strong> {userData.sistemaInmunitarioDebilitado ? "Sí" : "No información"}</p>
+                  </section>
+                </div>
+
+                <div className="modaldatos-row">
+                  <section className="modaldatos-plan">
+                    <h3>Detalles del Plan</h3>
+                    <p><strong>Plan:</strong> {userData.plan || "No información"}</p>
+                    <p><strong>Días Seleccionados:</strong> 
+                      {userData.diasSeleccionados && userData.diasSeleccionados.length > 0 
+                        ? userData.diasSeleccionados.join(", ") 
+                        : "Todos los días"}
+                    </p>
+                  </section>
+                </div>
+
+                <div className="modaldatos-row modaldatos-button-row">
+                  <button className="modaldatos-close-button" onClick={() => setShowModal(false)}>
+                    Cerrar
+                  </button>
+                </div>
               </>
             ) : (
               <p>Cargando datos...</p>
             )}
-            <button className="close-button" onClick={() => setShowModal(false)}>
-              Cerrar
-            </button>
           </div>
         </div>
       )}

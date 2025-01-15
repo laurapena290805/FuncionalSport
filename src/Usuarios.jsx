@@ -239,10 +239,10 @@ const Usuarios = () => {
               <h2>{isEditing ? "Editar Persona" : "Agregar Nueva Persona"}</h2>
 
               <div className="form-grild">
-                  <input type="text" value={id} onChange={(e) => setId(e.target.value)} placeholder="ID" className="input-field" />
-                  <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre" className="input-field" />
+                  <input type="text" value={id} onChange={(e) => setId(e.target.value)} placeholder="ID" className="input-field" disabled={isEditing} />
+                  <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Nombre" className="input-field" disabled={isEditing}/>
                   <input type="text" value={telefono} onChange={(e) => setTelefono(e.target.value)} placeholder="Teléfono" className="input-field" />
-                  <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} className="input-field" />
+                  <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} className="input-field" disabled={isEditing}/>
                   <input type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} placeholder="Dirección" className="input-field" />
                   <input type="text" value={grupoSanguineo} onChange={(e) => setGrupoSanguineo(e.target.value)} placeholder="Grupo Sanguíneo" className="input-field" />
                   <input type="text" value={ocupacion} onChange={(e) => setOcupacion(e.target.value)} placeholder="Ocupación" className="input-field" />
@@ -263,7 +263,6 @@ const Usuarios = () => {
                 >
                   <option value="transferencia">Transferencia</option>
                   <option value="efectivo">Efectivo</option>
-                  <option value="otro">Otro</option>
                 </select>
               </div>
 
@@ -292,7 +291,7 @@ const Usuarios = () => {
                 </select>
 
                 {plan === "plan1" && (
-                  <div className="checkbox-group">
+                  <div className="checkbox-group" disabled={isEditing} >
                     <label>
                       <input
                         type="checkbox"

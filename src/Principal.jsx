@@ -105,7 +105,7 @@ const Principal = () => {
   return (
     <div>
       <section className="section">
-        <h2>Clases del día</h2>
+        <h2>Clases programadas</h2>
         <table className="table">
           <thead>
             <tr>
