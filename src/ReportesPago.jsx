@@ -1,180 +1,125 @@
 import React, { useState, useEffect } from "react";
-import { getPersonas } from "./services/api"; // Asegúrate de que esta función esté importada correctamente
+import { getPersonas } from "./services/api";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import "chart.js/auto";
 
-// Registrar los componentes de Chart.js
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-const ReportesPago = () => {
+const ReportesMensuales = () => {
   const [personas, setPersonas] = useState([]);
-  const [mesSeleccionado, setMesSeleccionado] = useState("");
-  const [estadisticas, setEstadisticas] = useState({});
+  const [plan1Efectivo, setPlan1Efectivo] = useState(0);
+  const [plan1Transferencia, setPlan1Transferencia] = useState(0);
+  const [plan2Efectivo, setPlan2Efectivo] = useState(0);
+  const [plan2Transferencia, setPlan2Transferencia] = useState(0);
+  const [mesSeleccionado, setMesSeleccionado] = useState("enero");
+
+  const precioPlan1 = 65000;
+  const precioPlan2 = 75000;
 
   useEffect(() => {
-    // Obtener las personas al cargar la página
     getPersonas().then((data) => {
       setPersonas(data);
+      contarPagos(data, mesSeleccionado);
     });
-  }, []);
+  }, [mesSeleccionado]);
 
-  // Manejar el cambio en la selección del mes
-  const handleMesChange = (event) => {
-    setMesSeleccionado(event.target.value);
-    procesarEstadisticas(event.target.value);
-  };
-
-  // Procesar las estadísticas por mes y método de pago
-  const procesarEstadisticas = (mes) => {
-    const stats = {
-      plan1: { Efectivo: 0, Transferencia: 0, ganancia: 0, precio: 65000 },
-      plan2: { Efectivo: 0, Transferencia: 0, ganancia: 0, precio: 75000 },
-      metodosPago: { Efectivo: 0, Transferencia: 0 },
-    };
-
-    const plan1Precio = 65000; // Precio de Plan 1 (ajusta según sea necesario)
-    const plan2Precio = 75000; // Precio de Plan 2 (ajusta según sea necesario)
+  const contarPagos = (personas, mes) => {
+    let plan1Efectivo = 0;
+    let plan1Transferencia = 0;
+    let plan2Efectivo = 0;
+    let plan2Transferencia = 0;
 
     personas.forEach((persona) => {
-      // Verificar si el mes está presente en los pagos
       if (persona.pago && persona.pago[mes]) {
-        const metodoPago = persona.pago[mes];
-        const plan = persona.plan; // Asumimos que cada persona tiene un campo "plan" que indica a qué plan pertenece
-
-        if (plan) {
-          // Si la persona pertenece a un plan, incrementar el contador correspondiente
-          if (metodoPago === "Efectivo") {
-            stats[plan].Efectivo += 1;
-            stats.metodosPago.Efectivo += 1;
-          } else if (metodoPago === "Transferencia") {
-            stats[plan].Transferencia += 1;
-            stats.metodosPago.Transferencia += 1;
+        if (persona.plan === "plan1") {
+          if (persona.pago[mes] === "efectivo") {
+            plan1Efectivo++;
+          } else if (persona.pago[mes] === "transferencia") {
+            plan1Transferencia++;
+          }
+        } else if (persona.plan === "plan2") {
+          if (persona.pago[mes] === "efectivo") {
+            plan2Efectivo++;
+          } else if (persona.pago[mes] === "transferencia") {
+            plan2Transferencia++;
           }
         }
       }
     });
 
-    // Calcular las ganancias por plan
-    stats.plan1.ganancia = (stats.plan1.Efectivo + stats.plan1.Transferencia) * plan1Precio;
-    stats.plan2.ganancia = (stats.plan2.Efectivo + stats.plan2.Transferencia) * plan2Precio;
-
-    setEstadisticas(stats); // Actualizar el estado con las estadísticas calculadas
+    setPlan1Efectivo(plan1Efectivo);
+    setPlan1Transferencia(plan1Transferencia);
+    setPlan2Efectivo(plan2Efectivo);
+    setPlan2Transferencia(plan2Transferencia);
   };
 
-  // Datos para los gráficos
-  const dataPlanes = {
-    labels: ["Plan 1", "Plan 2"],
+  const totalIngresos = (plan1Efectivo + plan1Transferencia) * precioPlan1 + (plan2Efectivo + plan2Transferencia) * precioPlan2;
+
+  const data = {
+    labels: ["Plan 1 - Efectivo", "Plan 1 - Transferencia", "Plan 2 - Efectivo", "Plan 2 - Transferencia"],
     datasets: [
       {
-        label: "Número de Personas",
-        data: [
-          estadisticas.plan1?.Efectivo + estadisticas.plan1?.Transferencia || 0,
-          estadisticas.plan2?.Efectivo + estadisticas.plan2?.Transferencia || 0
-        ],
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        label: "Cantidad de Pagos",
+        data: [plan1Efectivo, plan1Transferencia, plan2Efectivo, plan2Transferencia],
+        backgroundColor: ["#4CAF50", "#2196F3", "#FF9800", "#E91E63"],
       },
     ],
   };
-
-  const dataMetodosPago = {
-    labels: ["Efectivo", "Transferencia"],
-    datasets: [
-      {
-        label: "Método de Pago",
-        data: [estadisticas.metodosPago?.Efectivo || 0, estadisticas.metodosPago?.Transferencia || 0],
-        backgroundColor: ["rgba(75, 192, 192, 0.6)", "rgba(153, 102, 255, 0.6)"],
-      },
-    ],
-  };
-
-  // Calcular el total de ganancias
-  const totalGanancias = (estadisticas.plan1?.ganancia || 0) + (estadisticas.plan2?.ganancia || 0);
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <h2>Estadísticas de Pagos</h2>
+    <div>
+      <h2>Reporte de Pagos</h2>
+      <label>Seleccionar Mes: </label>
+      <select onChange={(e) => setMesSeleccionado(e.target.value)} value={mesSeleccionado}>
+        {["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"].map((mes) => (
+          <option key={mes} value={mes}>{mes.charAt(0).toUpperCase() + mes.slice(1)}</option>
+        ))}
+      </select>
 
-      {/* Selector de mes */}
-      <div style={{ marginBottom: "20px" }}>
-        <label htmlFor="mes">Selecciona un mes:</label>
-        <select
-          id="mes"
-          value={mesSeleccionado}
-          onChange={handleMesChange}
-          style={{ padding: "5px 10px", fontSize: "16px" }}
-        >
-          <option value="">-- Elige un mes --</option>
-          <option value="enero">Enero</option>
-          <option value="febrero">Febrero</option>
-          <option value="marzo">Marzo</option>
-          <option value="abril">Abril</option>
-          {/* Agrega más opciones para los demás meses */}
-        </select>
-      </div>
+      <table border="1" style={{ marginTop: "20px", width: "100%", textAlign: "center", borderCollapse: "collapse" }}>
+        <thead>
+          <tr>
+            <th>Tipo de Pago</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Plan 1 - Efectivo</td>
+            <td>{plan1Efectivo}</td>
+            <td>${precioPlan1}</td>
+            <td>${plan1Efectivo * precioPlan1}</td>
+          </tr>
+          <tr>
+            <td>Plan 1 - Transferencia</td>
+            <td>{plan1Transferencia}</td>
+            <td>${precioPlan1}</td>
+            <td>${plan1Transferencia * precioPlan1}</td>
+          </tr>
+          <tr>
+            <td>Plan 2 - Efectivo</td>
+            <td>{plan2Efectivo}</td>
+            <td>${precioPlan2}</td>
+            <td>${plan2Efectivo * precioPlan2}</td>
+          </tr>
+          <tr>
+            <td>Plan 2 - Transferencia</td>
+            <td>{plan2Transferencia}</td>
+            <td>${precioPlan2}</td>
+            <td>${plan2Transferencia * precioPlan2}</td>
+          </tr>
+          <tr style={{ fontWeight: "bold" }}>
+            <td colSpan="3">Total Ingresos</td>
+            <td>${totalIngresos}</td>
+          </tr>
+        </tbody>
+      </table>
 
-      {/* Mostrar las estadísticas */}
-      <div>
-        {mesSeleccionado && (
-          <>
-            <table className="table" style={{ width: "80%", margin: "0 auto", textAlign: "center" }}>
-              <thead>
-                <tr>
-                  <th style={{ width: "20%" }}>Plan</th>
-                  <th style={{ width: "15%" }}>Precio</th>
-                  <th style={{ width: "15%" }}>Efectivo</th>
-                  <th style={{ width: "15%" }}>Transferencia</th>
-                  <th style={{ width: "15%" }}>Ganancia Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Plan 1</td>
-                  <td>{estadisticas.plan1?.precio || 0}</td>
-                  <td>{estadisticas.plan1?.Efectivo || 0}</td>
-                  <td>{estadisticas.plan1?.Transferencia || 0}</td>
-                  <td>{estadisticas.plan1?.ganancia || 0}</td>
-                </tr>
-                <tr>
-                  <td>Plan 2</td>
-                  <td>{estadisticas.plan2?.precio || 0}</td>
-                  <td>{estadisticas.plan2?.Efectivo || 0}</td>
-                  <td>{estadisticas.plan2?.Transferencia || 0}</td>
-                  <td>{estadisticas.plan2?.ganancia || 0}</td>
-                </tr>
-                {/* Fila con el total */}
-                <tr>
-                  <td colSpan="4" style={{ textAlign: "center" }}>Total</td>
-                  <td>{totalGanancias || 0}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            {/* Sección del gráfico de planes */}
-            <div style={{ display: "block", width: "60%", margin: "20px auto" }}>
-              <h3 style={{ marginBottom: "10px" }}>Distribución de Personas por Plan</h3>
-              <Bar 
-                data={dataPlanes} 
-                options={{ responsive: true }} 
-                height={200} 
-                width={300} 
-              />
-            </div>
-
-            {/* Sección del gráfico de métodos de pago */}
-            <div style={{ display: "block", width: "60%", margin: "20px auto" }}>
-              <h3 style={{ marginBottom: "10px" }}>Distribución de Métodos de Pago</h3>
-              <Bar 
-                data={dataMetodosPago} 
-                options={{ responsive: true }} 
-                height={200} 
-                width={300} 
-              />
-            </div>
-          </>
-        )}
+      <div style={{ marginTop: "20px", width: "80%", margin: "auto" }}>
+        <Bar data={data} />
       </div>
     </div>
   );
 };
 
-export default ReportesPago;
+export default ReportesMensuales;

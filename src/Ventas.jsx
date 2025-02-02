@@ -8,245 +8,223 @@ import {
 import "./Ventas.css";
 
 const Ventas = () => {
-  const [ventas, setVentas] = useState([]);
-  const [newProducto, setNewProducto] = useState("");
-  const [newPrecio, setNewPrecio] = useState("");
-  const [selectedProducto, setSelectedProducto] = useState("");
-  const [tipoPago, setTipoPago] = useState("pTransferencia");
-  const [cantidad, setCantidad] = useState(1);
-  const [selectedMonth, setSelectedMonth] = useState(""); // Estado para el mes seleccionado
-  const [isEditing, setIsEditing] = useState(false); // Controla si estamos en modo de edición
+  const [productos, setProductos] = useState([]);
+  const [nuevoProducto, setNuevoProducto] = useState({
+    nombre: "",
+    precio: 0,
+    meses: inicializarMeses(),
+  });
+  const [venta, setVenta] = useState({
+    producto: "",
+    cantidad: 0,
+    metodoPago: "efectivo",
+    mes: "enero",
+  });
+  const [editarProducto, setEditarProducto] = useState(null);  // Estado para el producto que se está editando
 
   useEffect(() => {
-    const fetchVentas = async () => {
-      const data = await getVentas();
-      setVentas(data);
-    };
     fetchVentas();
   }, []);
 
-  // Filtrar ventas por mes
-  const filteredVentas = selectedMonth
-    ? ventas.filter((venta) => venta.mesAnio === selectedMonth)
-    : ventas;
+  async function fetchVentas() {
+    const data = await getVentas();
+    setProductos(data);
+  }
 
-  const handleAddProducto = async () => {
-    if (!newProducto || !newPrecio) return alert("El nombre y el precio del producto son requeridos");
+  function inicializarMeses() {
+    const meses = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+    const estructuraMeses = {};
+    meses.forEach(mes => {
+      estructuraMeses[mes] = { efectivo: 0, transferencia: 0 };
+    });
+    return estructuraMeses;
+  }
 
-    const fechaActual = new Date();
-    const mesAnio = `${fechaActual.getMonth() + 1}-${fechaActual.getFullYear()}`;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNuevoProducto({ ...nuevoProducto, [name]: value });
+  };
 
-    const nuevoProducto = {
-      id: newProducto, // Usamos el nombre del producto como ID
-      precio: newPrecio,
-      vendidas: 0,
-      pTransferencia: 0,
-      pEfectivo: 0,
-      mesAnio, // Se asigna el mes y año actual
-    };
+  const handleVentaChange = (e) => {
+    const { name, value } = e.target;
+    setVenta({ ...venta, [name]: value });
+  };
 
-    // Verificar si el producto ya existe en el mes
-    const productoExistente = ventas.find(
-      (venta) => venta.id === newProducto.id && venta.mesAnio === mesAnio
-    );
-    if (productoExistente) {
-      return alert("Este producto ya existe en el mes seleccionado");
+  const handleEditarChange = (e) => {
+    const { name, value } = e.target;
+    setEditarProducto({ ...editarProducto, [name]: value });
+  };
+
+  const agregarProducto = async () => {
+    if (!nuevoProducto.precio || nuevoProducto.precio <= 0 || !nuevoProducto.nombre) {
+      alert("Por favor, ingresa un nombre y un precio válido.");
+      return;
+    }
+    const productoCreado = { ...nuevoProducto };
+    await createVentas(productoCreado.nombre, productoCreado);
+    setProductos([...productos, productoCreado]);
+    setNuevoProducto({ precio: 0, meses: inicializarMeses() });
+  };
+
+  const agregarVenta = async () => {
+    const productoSeleccionado = productos.find(p => p.nombre === venta.producto);
+    if (!productoSeleccionado) {
+      alert("Producto no encontrado");
+      return;
+    }
+    const updatedMeses = { ...productoSeleccionado.meses };
+    updatedMeses[venta.mes][venta.metodoPago] += parseFloat(venta.cantidad);
+    
+    await updateVentas(venta.producto, { meses: updatedMeses });
+    fetchVentas();
+    setVenta({ producto: "", cantidad: 0, metodoPago: "efectivo", mes: "enero" });
+  };
+
+  const handleEliminar = async (productoNombre) => {
+    await deleteVenta(productoNombre);
+    fetchVentas();
+  };
+
+  const handleRestablecer = async (productoNombre) => {
+    const producto = productos.find(p => p.nombre === productoNombre);
+    const resetMeses = inicializarMeses();
+    await updateVentas(productoNombre, { meses: resetMeses });
+    fetchVentas();
+  };
+
+  const handleEditar = (producto) => {
+    setEditarProducto(producto);
+  };
+
+  const handleGuardarEdicion = async () => {
+    if (!editarProducto.nombre || editarProducto.precio <= 0) {
+      alert("Por favor, ingresa un nombre y precio válido.");
+      return;
     }
 
-    await createVentas(nuevoProducto);
-    setVentas([...ventas, nuevoProducto]);
-    setNewProducto("");
-    setNewPrecio("");
-  };
-
-  const handleAddCompra = async () => {
-    if (!selectedProducto || !tipoPago || cantidad <= 0) {
-      return alert("Debe seleccionar un producto, un método de pago y una cantidad válida");
-    }
-
-    const producto = ventas.find((venta) => venta.id === selectedProducto);
-    if (!producto) return alert("Producto no encontrado");
-
-    const fechaActual = new Date();
-    const mesAnio = `${fechaActual.getMonth() + 1}-${fechaActual.getFullYear()}`;
-
-    // Solo actualizar las cantidades para el mes actual
-    const updatedProducto = {
-      vendidas: producto.vendidas + cantidad,
-      [tipoPago]: producto[tipoPago] + cantidad,
-      mesAnio, // Se asigna el mes y año actual
-    };
-
-    await updateVentas(selectedProducto, updatedProducto);
-
-    setVentas(
-      ventas.map((venta) =>
-        venta.id === selectedProducto && venta.mesAnio === mesAnio
-          ? { ...venta, ...updatedProducto }
-          : venta
-      )
-    );
-  };
-
-  const handleEditProducto = (id) => {
-    const producto = ventas.find((venta) => venta.id === id);
-    if (!producto) return;
-    setNewProducto(producto.id);
-    setNewPrecio(producto.precio);
-    setIsEditing(true); // Activar modo de edición
-  };
-
-  const handleUpdateProducto = async () => {
-    if (!newProducto || !newPrecio) return alert("El nombre y el precio del producto son requeridos");
-
-    const updatedProducto = {
-      id: newProducto,
-      precio: newPrecio,
-    };
-
-    await updateVentas(newProducto, updatedProducto);
-    setVentas(
-      ventas.map((venta) =>
-        venta.id === newProducto ? { ...venta, ...updatedProducto } : venta
-      )
-    );
-    setNewProducto("");
-    setNewPrecio("");
-    setIsEditing(false); // Desactivar modo de edición
-  };
-
-  const handleDeleteProducto = async (id) => {
-    await deleteVenta(id);
-    setVentas(ventas.filter((venta) => venta.id !== id));
-  };
-
-  const handleResetProducto = () => {
-    setNewProducto("");
-    setNewPrecio("");
-    setIsEditing(false); // Desactivar modo de edición sin guardar cambios
+    await updateVentas(editarProducto.nombre, editarProducto);
+    fetchVentas();
+    setEditarProducto(null); // Cerrar el formulario de edición
   };
 
   return (
-    <div className="ventas-page">
-      <h1>Gestión de Ventas</h1>
-
-      {/* Filtro de mes */}
-      <section className="filter-section">
-        <label>Filtrar por mes:</label>
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-        >
-          <option value="">Todos los meses</option>
-          <option value="1-2025">Enero 2025</option>
-          <option value="2-2025">Febrero 2025</option>
-          <option value="3-2025">Marzo 2025</option>
-          {/* Puedes agregar más meses de acuerdo a tus necesidades */}
-        </select>
-      </section>
-
-      {/* Tabla */}
-      <section>
-        <h2>Listado de Ventas</h2>
-        <table className="ventas-table">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Precio</th>
-              <th>Vendidas</th>
-              <th>Transferencia</th>
-              <th>Efectivo</th>
-              <th>Acciones</th>
+    <div className="ventas-container">
+      <h2>Gestión de Ventas</h2>
+      
+      {/* Tabla de Productos */}
+      <h3>Lista de Productos</h3>
+      <table className="productos-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Cantidad Efectivo</th>
+            <th>Cantidad Transferencia</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {productos.map((producto) => (
+            <tr key={producto.nombre}>
+              <td>{producto.nombre}</td>
+              <td>${producto.precio}</td>
+              <td>{producto.meses[venta.mes]?.efectivo || 0}</td>
+              <td>{producto.meses[venta.mes]?.transferencia || 0}</td>
+              <td>
+                <button onClick={() => handleEditar(producto)} className="btn btn-warning">Editar</button>
+                <button onClick={() => handleRestablecer(producto.nombre)} className="btn btn-warning">Restablecer</button>
+                <button onClick={() => handleEliminar(producto.nombre)} className="btn btn-danger">Eliminar</button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {filteredVentas.map((venta) => (
-              <tr key={venta.id}>
-                <td>{venta.id}</td>
-                <td>{venta.precio}</td>
-                <td>{venta.vendidas}</td>
-                <td>{venta.pTransferencia}</td>
-                <td>{venta.pEfectivo}</td>
-                <td>
-                  <button
-                    className="btn-edit"
-                    onClick={() => handleEditProducto(venta.id)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="btn-delete"
-                    onClick={() => handleDeleteProducto(venta.id)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+          ))}
+        </tbody>
+      </table>
 
-      {/* Formulario Añadir Compra */}
-      <section className="form-section">
-        <h2>Añadir Venta</h2>
-        <div className="form-elements">
-          <select
-            value={selectedProducto}
-            onChange={(e) => setSelectedProducto(e.target.value)}
-          >
-            <option value="">Selecciona un producto</option>
-            {ventas.map((venta) => (
-              <option key={venta.id} value={venta.id}>
-                {venta.id}
-              </option>
-            ))}
-          </select>
-          <select
-            value={tipoPago}
-            onChange={(e) => setTipoPago(e.target.value)}
-          >
-            <option value="pTransferencia">Transferencia</option>
-            <option value="pEfectivo">Efectivo</option>
-          </select>
-          <input
-            type="number"
-            min="1"
-            placeholder="Cantidad"
-            value={cantidad}
-            onChange={(e) => setCantidad(Number(e.target.value))}
-          />
-          <button onClick={handleAddCompra}>Añadir Venta</button>
+      {/* Modal de Edición de Producto */}
+      {editarProducto && (
+        <div className="modal-edicion">
+          <h3>Editar Producto</h3>
+          <div className="input-group">
+            <input
+              type="text"
+              name="nombre"
+              placeholder="Nombre del producto"
+              value={editarProducto.nombre}
+              onChange={handleEditarChange}
+              className="input-field"
+            />
+            <input
+              type="number"
+              name="precio"
+              placeholder="Precio"
+              value={editarProducto.precio}
+              onChange={handleEditarChange}
+              className="input-field"
+            />
+          </div>
+          <button onClick={handleGuardarEdicion} className="btn btn-success">Guardar Cambios</button>
+          <button onClick={() => setEditarProducto(null)} className="btn btn-secondary">Cancelar</button>
         </div>
-      </section>
+      )}
 
-      {/* Formulario Añadir/Editar Producto */}
-      <section className="form-section">
-        <h2>{isEditing ? "Editar Producto" : "Añadir Producto"}</h2>
-        <div className="form-elements">
+      {/* Sección Añadir Producto */}
+      <div className="formulario producto-form">
+        <h3>Añadir Producto</h3>
+        <div className="input-group">
           <input
             type="text"
+            name="nombre"
             placeholder="Nombre del producto"
-            value={newProducto}
-            onChange={(e) => setNewProducto(e.target.value)}
+            value={nuevoProducto.nombre || ""}
+            onChange={handleChange}
+            className="input-field"
           />
           <input
             type="number"
-            min="0"
+            name="precio"
             placeholder="Precio"
-            value={newPrecio}
-            onChange={(e) => setNewPrecio(e.target.value)}
+            value={nuevoProducto.precio}
+            onChange={handleChange}
+            className="input-field"
           />
-          {isEditing ? (
-            <>
-              <button onClick={handleUpdateProducto}>Actualizar Producto</button>
-              <button onClick={handleResetProducto}>Restaurar</button>
-            </>
-          ) : (
-            <button onClick={handleAddProducto}>Guardar Producto</button>
-          )}
         </div>
-      </section>
+        <button onClick={agregarProducto} className="btn btn-primary">Añadir Producto</button>
+      </div>
+
+      {/* Sección Añadir Venta */}
+      <div className="formulario venta-form">
+        <h3>Añadir Venta</h3>
+        <div className="input-group">
+          <select name="mes" value={venta.mes} onChange={handleVentaChange} className="input-field">
+            {Object.keys(inicializarMeses()).map((mes) => (
+              <option key={mes} value={mes}>{mes}</option>
+            ))}
+          </select>
+          <select name="producto" value={venta.producto} onChange={handleVentaChange} className="input-field">
+            <option value="">Selecciona un producto</option>
+            {productos.map((producto) => (
+              <option key={producto.nombre} value={producto.nombre}>{producto.nombre}</option>
+            ))}
+          </select>
+          <input
+            type="number"
+            name="cantidad"
+            placeholder="Cantidad"
+            value={venta.cantidad}
+            onChange={handleVentaChange}
+            className="input-field"
+          />
+          <select name="metodoPago" value={venta.metodoPago} onChange={handleVentaChange} className="input-field">
+            <option value="efectivo">Efectivo</option>
+            <option value="transferencia">Transferencia</option>
+          </select>
+        </div>
+        <button onClick={agregarVenta} className="btn btn-success">Registrar Venta</button>
+      </div>
+
     </div>
   );
 };
